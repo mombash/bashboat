@@ -4,26 +4,16 @@ import "leaflet/dist/leaflet.css";
 import "./App.css";
 
 const MapComponent = ({ vesselData, latestVesselData }) => {
-
-  // const positions = vesselData.map((vessels) => vessels.map((vessel) => [vessel.lat, vessel.lng]));
   const positions = vesselData.flatMap(vessels => vessels.map(vessel => [vessel.lat, vessel.lng]));
   console.log("Positions:", positions);
 
-  const redOptions = { color: 'red' };
-
-  const polyline = [
-    [51.505, -0.09],
-    [51.51, -0.1],
-    [51.51, -0.12],
-  ]
-
-  console.log("Polyline:", polyline);
+  const options = { color: 'red', smoothFactor: 10 };
 
   return (
     <div className="map-container">
       <MapContainer
-        center={[51.505, -0.09]}
-        zoom={13}
+        center={positions[0]}
+        zoom={9}
         style={{ height: "80vh", width: "90vw" }}
       >
         <TileLayer
@@ -39,7 +29,7 @@ const MapComponent = ({ vesselData, latestVesselData }) => {
             </Popup>
           </Marker>
         ))}
-        <Polyline pathOptions={redOptions} positions={positions} />
+        <Polyline pathOptions={options} positions={positions} />
       </MapContainer>
     </div>
   );

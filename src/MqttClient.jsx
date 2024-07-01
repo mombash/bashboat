@@ -58,7 +58,7 @@ const MqttClient = ({ onDataReceived }) => {
             source: { sentence: "RMC", talker: "GN", type: "NMEA0183", label: "gps" },
             timestamp: new Date().toISOString(),
             values: [{
-              path: "navigation.position", value: { longitude: Date.now() % 60, latitude: Date.now() % 30 }
+              path: "navigation.position", value: { longitude: generateLongitude(), latitude: generateLatitude() }
             }, {
               path: "navigation.courseOverGroundTrue", value: 0
             }, {
@@ -74,6 +74,22 @@ const MqttClient = ({ onDataReceived }) => {
           }],
           context: "vessels.urn:mrn:signalk:uuid:dummy"
         };
+
+        function generateLongitude() {
+          const minLongitude = 51;
+          const maxLongitude = 52;
+          const longitudeRange = maxLongitude - minLongitude;
+          const randomLongitude = Math.random() * longitudeRange + minLongitude;
+          return randomLongitude.toFixed(6);
+        }
+
+        function generateLatitude() {
+          const minLatitude = 25;
+          const maxLatitude = 26;
+          const latitudeRange = maxLatitude - minLatitude;
+          const randomLatitude = Math.random() * latitudeRange + minLatitude;
+          return randomLatitude.toFixed(6);
+        }
 
         const vesselData = dummyData.updates.map(update => {
           const position = update.values.find(value => value.path === 'navigation.position');
@@ -102,8 +118,7 @@ const MqttClient = ({ onDataReceived }) => {
       }
       clearInterval(dummyDataInterval);
     };
-  }, [lastMessageTime, onDataReceived, hasReceivedValidData]); // Include hasReceivedValidData in the dependency array
-
+  }, [lastMessageTime, onDataReceived, hasReceivedValidData]);
   return null;
 };
 

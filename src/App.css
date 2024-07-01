@@ -34,7 +34,7 @@
   margin: 0 auto; /* Horizontally center align */
 }
 
-h1 {
+h1,p {
   text-align: center;
 }
 
