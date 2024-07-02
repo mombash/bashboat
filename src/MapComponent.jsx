@@ -3,16 +3,20 @@ import { MapContainer, TileLayer, Marker, Popup, Polyline } from "react-leaflet"
 import "leaflet/dist/leaflet.css";
 import "./App.css";
 
-const MapComponent = ({ vesselData, latestVesselData }) => {
-  const positions = vesselData.flatMap(vessels => vessels.map(vessel => [vessel.lat, vessel.lng]));
-  console.log("Positions:", positions);
+const MapComponent = ({ vesselData }) => {
+  const vesselEntries = Object.entries(vesselData).map(([id, positions]) => ({
+    id,
+    positions: positions.flat().map(({ lat, lng }) => [lat, lng]),
+  }));
+
+  const center = vesselEntries.length > 0 && vesselEntries[0].positions.length > 0 ? vesselEntries[0].positions[0] : [0, 0];
 
   const options = { color: 'red', smoothFactor: 10 };
 
   return (
     <div className="map-container">
       <MapContainer
-        center={positions[0]}
+        center={center}
         zoom={9}
         style={{ height: "80vh", width: "90vw" }}
       >
@@ -20,16 +24,21 @@ const MapComponent = ({ vesselData, latestVesselData }) => {
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
           attribution='© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         />
-        {latestVesselData.map((vessel) => (
-          <Marker position={[vessel.lat, vessel.lng]}>
-            <Popup>
-              Latitude: {vessel.lat}<br/>
-              Longitude: {vessel.lng}<br/>
-              Speed: {vessel.speed} knots
-            </Popup>
-          </Marker>
+        {vesselEntries.map((vessel) => {
+          const latestPosition = vessel.positions[vessel.positions.length - 1]; // Get the latest position
+          return (
+            <Marker key={`${vessel.id}-latest`} position={latestPosition}>
+              <Popup>
+                Vessel ID: {vessel.id}<br/>
+                Latitude: {latestPosition[0]}<br/>
+                Longitude: {latestPosition[1]}
+              </Popup>
+            </Marker>
+          );
+        })}
+        {vesselEntries.map((vessel, index) => (
+          <Polyline key={`path-${vessel.id}`} pathOptions={{ ...options, color: `hsl(${index * 360 / vesselEntries.length}, 100%, 50%)` }} positions={vessel.positions} />
         ))}
-        <Polyline pathOptions={options} positions={positions} />
       </MapContainer>
     </div>
   );

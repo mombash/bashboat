@@ -53,7 +53,7 @@ const App = () => {
           {vesselData[someKey].length > 1 ? (
             <>
               <Table latestVesselData={latestVesselData} />
-              {/* <MapComponent vesselData={vesselData} latestVesselData={latestVesselData} /> */}
+              <MapComponent vesselData={vesselData} />
             </>
           ) : (
             <p>Loading vessel data...</p>
