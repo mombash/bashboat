@@ -46,7 +46,8 @@ const App = () => {
 
   return (
     <div className="app-container">
-      <h1>Vessel Navigation Data</h1>
+      <h1>BASHBOAT</h1>
+      <h2>naval fleet management</h2>
       <MqttClient onDataReceived={handleDataReceived} />
       {typeof someKey !== 'undefined' ? (
         <>

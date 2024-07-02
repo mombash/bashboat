@@ -21,7 +21,8 @@
 }
 
 .map-container {
-  flex: 1;
+  border-radius: 8px; /* Adjust as needed for desired roundness */
+  overflow: hidden; /* Ensures the corners remain rounded */
 }
 
 .map-container {
@@ -34,8 +35,13 @@
   margin: 0 auto; /* Horizontally center align */
 }
 
-h1,p {
+h1,h2,p {
   text-align: center;
+}
+
+h1, h2{
+  margin-top: 1px; /* Add margin to top */
+  margin-bottom: 1px; /* Add margin to bottom */
 }
 
 .table {
@@ -44,19 +50,41 @@ h1,p {
   align-items: center;
   width: 600px; /* Fixed width */
   margin: 0 auto; /* Horizontally center align */
-  border: 1px solid black;
-  background-color: white;
-  color: black; /* Set text color to dark grey */
+  border-collapse: separate; /* Allows for rounded corners */
+  border-spacing: 0; /* Removes spacing between cells */
+  border-radius: 8px; /* Rounded corners for the table */
+  overflow: hidden; /* Ensures the rounded corners are visible */
+  background-color: #f0f0f0; /* Light grey background */
+  color: #333; /* Dark grey text color */
   text-align: center; /* Center align the content */
   table-layout: fixed; /* Set table layout to fixed */
   margin-top: 20px; /* Add margin to top */
   margin-bottom: 20px; /* Add margin to bottom */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Adds a subtle shadow */
 }
 
 .table th,
 .table td {
   width: 33%; /* Equal column widths */
-  /* padding: 8px; Add padding to cells */
-  border: 1px solid darkgray; /* Add border to cells */
+  padding: 12px; /* Add padding to cells for better spacing */
+  border-bottom: 1px solid #ddd; /* Light grey border for rows */
   text-align: center; /* Center align the content */
+}
+
+.table th {
+  background-color: #4d4d4d; /* Blue background for headers */
+  color: #ffffff; /* White text color */
+}
+
+.table tr:last-child td {
+  border-bottom: none; /* Removes the border from the last row */
+}
+
+.triangle-marker {
+  width: 0;
+  height: 0;
+  border-left: 10px solid transparent;
+  border-right: 10px solid transparent;
+  border-bottom: 20px solid red; /* Triangle pointing up */
+  transform-origin: 50% 50%;
 }
