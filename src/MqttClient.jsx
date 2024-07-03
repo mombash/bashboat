@@ -1,5 +1,24 @@
 import React, { useEffect, useState } from 'react';
 import mqtt from 'mqtt';
+import { generateDummyData } from './generateDummyData';
+
+// Utility function to extract vessel data
+function extractVesselData(data) {
+  return data.updates.map(update => {
+    const position = update.values.find(value => value.path === 'navigation.position');
+    const speed = update.values.find(value => value.path === 'navigation.speedOverGround');
+    if (position && position.value.latitude !== null && position.value.longitude !== null) {
+      const uuid = data.context.split(':').pop();
+      return {
+        id: uuid,
+        lat: position.value.latitude,
+        lng: position.value.longitude,
+        speed: speed?.value || 0,
+      };
+    }
+    return null;
+  }).filter(item => item !== null); // Filter out invalid positions
+}
 
 const MqttClient = ({ onDataReceived }) => {
   const [client, setClient] = useState(null);
@@ -26,22 +45,8 @@ const MqttClient = ({ onDataReceived }) => {
         console.log('Received message:', data);
         setLastMessageTime(Date.now());
         setHasReceivedValidData(true); // Set to true when valid data is received
-
-        const vesselData = data.updates.map(update => {
-          const position = update.values.find(value => value.path === 'navigation.position');
-          const speed = update.values.find(value => value.path === 'navigation.speedOverGround');
-          if (position && position.value.latitude !== null && position.value.longitude !== null) {
-            const uuid = data.context.split(':').pop();
-            return {
-              id: uuid,
-              lat: position.value.latitude,
-              lng: position.value.longitude,
-              speed: speed?.value || 0,
-            };
-          }
-          return null;
-        }).filter(item => item !== null); // Filter out invalid positions
-
+        
+        const vesselData = extractVesselData(data)
         onDataReceived(vesselData);
       } catch (error) {
         console.error('Error parsing message:', error);
@@ -52,65 +57,15 @@ const MqttClient = ({ onDataReceived }) => {
 
     const dummyDataInterval = setInterval(() => {
       if (!hasReceivedValidData && Date.now() - lastMessageTime > 5000) { // Check if no valid data has been received
-        // Generate and send dummy data
-        const dummyData = {
-          updates: [{
-            source: { sentence: "RMC", talker: "GN", type: "NMEA0183", label: "gps" },
-            timestamp: new Date().toISOString(),
-            values: [{
-              path: "navigation.position", value: { longitude: generateLongitude(), latitude: generateLatitude() }
-            }, {
-              path: "navigation.courseOverGroundTrue", value: 0
-            }, {
-              path: "navigation.speedOverGround", value: 5.0
-            }, {
-              path: "navigation.magneticVariation", value: 0
-            }, {
-              path: "navigation.magneticVariationAgeOfService", value: Date.now()
-            }, {
-              path: "navigation.datetime", value: new Date().toISOString()
-            }],
-            $source: "gps.GN"
-          }],
-          context: "vessels.urn:mrn:signalk:uuid:dummy"
-        };
-
-        function generateLongitude() {
-          const minLongitude = 51;
-          const maxLongitude = 52;
-          const longitudeRange = maxLongitude - minLongitude;
-          const randomLongitude = Math.random() * longitudeRange + minLongitude;
-          return randomLongitude.toFixed(6);
-        }
-
-        function generateLatitude() {
-          const minLatitude = 25;
-          const maxLatitude = 26;
-          const latitudeRange = maxLatitude - minLatitude;
-          const randomLatitude = Math.random() * latitudeRange + minLatitude;
-          return randomLatitude.toFixed(6);
-        }
-
-        const vesselData = dummyData.updates.map(update => {
-          const position = update.values.find(value => value.path === 'navigation.position');
-          const speed = update.values.find(value => value.path === 'navigation.speedOverGround');
-          if (position && position.value.latitude !== null && position.value.longitude !== null) {
-            const uuid = dummyData.context.split(':').pop();
-            return {
-              id: uuid,
-              lat: position.value.latitude,
-              lng: position.value.longitude,
-              speed: speed?.value || 0,
-            };
-          }
-          return null;
-        }).filter(item => item !== null); // Filter out invalid positions
-
+        
+        const dummyData = generateDummyData();
+        const dummyVesselData = extractVesselData(dummyData);
         console.log('Injecting dummy data:', vesselData);
         onDataReceived(vesselData);
         setLastMessageTime(Date.now());
       }
     }, 5000);
+
 
     return () => {
       if (client) {
