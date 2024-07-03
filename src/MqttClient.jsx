@@ -28,9 +28,9 @@ const MqttClient = ({ onDataReceived , extractVesselData }) => {
         setLastMessageTime(Date.now());
         setHasReceivedValidData(true); // Set to true when valid data is received
         
-        // const vesselData = extractVesselData(data)
+        const vesselData = extractVesselData(data)
         // console.log('Extracted vessel data:', vesselData);
-        onDataReceived(data);
+        onDataReceived(vesselData);
       } catch (error) {
         console.error('Error parsing message:', error);
       }
