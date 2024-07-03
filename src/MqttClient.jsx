@@ -2,25 +2,7 @@ import React, { useEffect, useState } from 'react';
 import mqtt from 'mqtt';
 import { generateDummyData } from './generateDummyData';
 
-// Utility function to extract vessel data
-function extractVesselData(data) {
-  return data.updates.map(update => {
-    const position = update.values.find(value => value.path === 'navigation.position');
-    const speed = update.values.find(value => value.path === 'navigation.speedOverGround');
-    if (position && position.value.latitude !== null && position.value.longitude !== null) {
-      const uuid = data.context.split(':').pop();
-      return {
-        id: uuid,
-        lat: position.value.latitude,
-        lng: position.value.longitude,
-        speed: speed?.value || 0,
-      };
-    }
-    return null;
-  }).filter(item => item !== null); // Filter out invalid positions
-}
-
-const MqttClient = ({ onDataReceived }) => {
+const MqttClient = ({ onDataReceived , extractVesselData }) => {
   const [client, setClient] = useState(null);
   const [lastMessageTime, setLastMessageTime] = useState(Date.now());
   const [hasReceivedValidData, setHasReceivedValidData] = useState(false); // New state variable
@@ -46,8 +28,9 @@ const MqttClient = ({ onDataReceived }) => {
         setLastMessageTime(Date.now());
         setHasReceivedValidData(true); // Set to true when valid data is received
         
-        const vesselData = extractVesselData(data)
-        onDataReceived(vesselData);
+        // const vesselData = extractVesselData(data)
+        // console.log('Extracted vessel data:', vesselData);
+        onDataReceived(data);
       } catch (error) {
         console.error('Error parsing message:', error);
       }
@@ -60,8 +43,8 @@ const MqttClient = ({ onDataReceived }) => {
         
         const dummyData = generateDummyData();
         const dummyVesselData = extractVesselData(dummyData);
-        console.log('Injecting dummy data:', vesselData);
-        onDataReceived(vesselData);
+        console.log('Injecting dummy data:', dummyData);
+        onDataReceived(dummyData);
         setLastMessageTime(Date.now());
       }
     }, 5000);
