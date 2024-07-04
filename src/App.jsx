@@ -17,6 +17,7 @@ const App = () => {
   // const [vesselData, setVesselData] = useState({});
   const [vesselData, setMyVesselData] = useState({});
   const [otherVesselData, setOtherVesselData] = useState({});
+  const [isAllDataValid, setIsAllDataValid] = useState(false);
 
   // Utility function to extract vessel data
 const extractVesselData = (data) => {
@@ -103,18 +104,37 @@ const extractVesselData = (data) => {
   const otherFlattenedVesselData = Object.values(otherVesselData).flat(2);
   const otherLatestVesselData = getLatestVessels(otherFlattenedVesselData);
 
+  if(typeof mySomeKey !== 'undefined' && typeof someKey !== 'undefined') {
+    console.log("some data is valid")
+    if (vesselData[mySomeKey].length >= 1 && otherVesselData[someKey].length >= 1) {
+      console.log("All data is valid");
+      if (!isAllDataValid) {setIsAllDataValid(true);}
+    }
+  }
+    
   return (
     <div className="app-container">
       <h1>BASHBOAT</h1>
       <h2>naval fleet management</h2>
-      <MqttClient extractVesselData={extractVesselData} onDataReceived={handleDataReceived} />
+      <MqttClient extractVesselData={extractVesselData} onDataReceived={handleDataReceived} /> 
+      {isAllDataValid ? (  
+            <>
+              {/* <h1>All Vessels</h1> */}
+              {/* <Table extractVesselData={extractVesselData} latestVesselData={Object.values(myLatestVesselData.concat(otherLatestVesselData))} /> */}
+              <MapComponent vesselData={{...vesselData, ...otherVesselData}} />
+            </>
+          ) : (
+            <p>Loading vessel data...</p>
+          )
+      }
+      
       {typeof mySomeKey !== 'undefined' ? (
         <>
           {vesselData[mySomeKey].length >= 1 ? (
             <>
               <h3>My Vessels</h3>
               <Table extractVesselData={extractVesselData} latestVesselData={Object.values(myLatestVesselData)} />
-              <MapComponent vesselData={vesselData} />
+              {!isAllDataValid ? (<MapComponent vesselData={vesselData} />) : (<></>) }
             </>
           ) : (
             <p>Loading my vessel data...</p>
@@ -129,7 +149,7 @@ const extractVesselData = (data) => {
             <>
               <h3>Other Vessels</h3>
               <Table extractVesselData={extractVesselData} latestVesselData={Object.values(otherLatestVesselData)} />
-              <MapComponent vesselData={otherVesselData} />
+              {!isAllDataValid ? (<MapComponent vesselData={otherVesselData} />) : (<></>) }
             </>
           ) : (
             <p>Loading other vessel data...</p>
