@@ -138,35 +138,41 @@ const App = () => {
 
   return (
     <div className="app-container">
-      <div>
+      <div className="title-div">
         <h1>BASHBOAT</h1>
         <h2>naval fleet management</h2>
+      </div>
+      <div className="map-div">
+        {/* all vessels map */}
+        {isAllDataValid ? (
+          <>
+            {/* <h1>All Vessels</h1> */}
+            {/* <Table extractVesselData={extractVesselData} latestVesselData={Object.values(myLatestVesselData.concat(otherLatestVesselData))} /> */}
+            <MapComponent vesselData={{ ...vesselData, ...otherVesselData }} />
+          </>
+        ) : (
+          <p>Loading vessel data...</p>
+        )}
       </div>
       <MqttClient
         extractVesselData={extractVesselData}
         onDataReceived={handleDataReceived}
       />
-      {isAllDataValid ? (
-        <>
-          {/* <h1>All Vessels</h1> */}
-          {/* <Table extractVesselData={extractVesselData} latestVesselData={Object.values(myLatestVesselData.concat(otherLatestVesselData))} /> */}
-          <MapComponent vesselData={{ ...vesselData, ...otherVesselData }} />
-        </>
-      ) : (
-        <p>Loading vessel data...</p>
-      )}
 
       {typeof mySomeKey !== "undefined" ? (
         <>
           {vesselData[mySomeKey].length >= 1 ? (
             <>
-              <h3>My Vessels</h3>
+              {/* <h3>My Vessels</h3> */}
               <Table
+                className="table-div"
                 extractVesselData={extractVesselData}
                 latestVesselData={Object.values(myLatestVesselData)}
               />
               {!isAllDataValid ? (
-                <MapComponent vesselData={vesselData} />
+                <div className="map-div">
+                  <MapComponent vesselData={vesselData} />
+                </div>
               ) : (
                 <></>
               )}
@@ -182,13 +188,16 @@ const App = () => {
         <>
           {otherVesselData[someKey].length >= 1 ? (
             <>
-              <h3>Other Vessels</h3>
+              {/* <h3>Other Vessels</h3> */}
               <Table
+                className="table-div"
                 extractVesselData={extractVesselData}
                 latestVesselData={Object.values(otherLatestVesselData)}
               />
               {!isAllDataValid ? (
-                <MapComponent vesselData={otherVesselData} />
+                <div>
+                  <MapComponent vesselData={otherVesselData} />
+                </div>
               ) : (
                 <></>
               )}
