@@ -2,8 +2,8 @@ import React from "react";
 import { MapContainer, TileLayer, Marker, Popup, Polyline } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import "./App.css";
-import marker from "./map-marker-1024.png";
-import otherMarker from "./map-marker-1024-copy.png";
+import marker from "./myVessel-map-marker.png";
+import otherMarker from "./otherVessel-map-marker.png";
 
 const MapComponent = ({ vesselData }) => {
   console.log('mapC Vessel data:', vesselData);
