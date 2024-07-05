@@ -4,6 +4,8 @@ import MapComponent from './MapComponent';
 import Table from './Table';
 import './App.css';
 
+// unique to formatting
+
 function getLatestVessels(vesselData) {
   const latestVessels = {};
   vesselData.forEach(vessel => {
