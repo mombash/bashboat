@@ -31,9 +31,9 @@ const MapComponent = ({ vesselData }) => {
   return (
     <div className="map-container">
       <MapContainer
+        className="map-container"
         center={center}
         zoom={9}
-        style={{ height: "80vh", width: "80vw" }}
       >
         <TileLayer
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"

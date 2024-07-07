@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import MqttClient from "./MqttClient";
 import MapComponent from "./MapComponent";
+import EmptyMapComponent from "./EmptyMapComponent";
 import Table from "./Table";
 import "./App.css";
 
@@ -171,43 +172,57 @@ const App = () => {
               />
               {!isAllDataValid ? (
                 <div className="map-div">
-                  <MapComponent vesselData={vesselData} />
+                  {/* <MapComponent vesselData={vesselData} /> */}
                 </div>
               ) : (
-                <></>
+                <>
+                {/* <EmptyMapComponent /> */}
+                </>
               )}
             </>
           ) : (
+            <>
+            <EmptyMapComponent />
             <p>Loading my vessel data...</p>
+            </>
           )}
         </>
       ) : (
+        <div className="map-div">
+        <EmptyMapComponent />
         <p>No my vessel data yet...</p>
+        </div>
       )}
       {typeof someKey !== "undefined" ? (
         <>
           {otherVesselData[someKey].length >= 1 ? (
             <>
               {/* <h3>Other Vessels</h3> */}
-              <Table
+              {/* <Table
                 className="table-div"
                 extractVesselData={extractVesselData}
                 latestVesselData={Object.values(otherLatestVesselData)}
-              />
+              /> */}
               {!isAllDataValid ? (
                 <div>
-                  <MapComponent vesselData={otherVesselData} />
+                  {/* <MapComponent vesselData={otherVesselData} /> */}
                 </div>
               ) : (
                 <></>
               )}
             </>
           ) : (
+            <div className="map-div">
+            <EmptyMapComponent />
             <p>Loading other vessel data...</p>
+            </div>
           )}
         </>
       ) : (
+        <div className="map-div">
+        <EmptyMapComponent />
         <p>No other vessel data yet...</p>
+        </div>
       )}
     </div>
   );

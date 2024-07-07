@@ -51,6 +51,26 @@ p {
 
 table {
   grid-area: sidebar;
+  display: table;
+  justify-content: center;
+  align-items: center;
+  margin: 0 auto;
+  border-collapse: separate;
+  /* border-radius: 8px; */
+  overflow: hidden;
+  border-spacing: 0;
+  background-color: #f0f0f0; /* Light grey background */
+  color: #333; /* Dark grey text color */
+  text-align: center; /* Center align the content */
+  table-layout: fixed;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Adds a subtle shadow */
+}
+
+map-div {
+  grid-area: main;
+  /* width: 75vw; */
+  /* height: 80vh; */
+  object-fit: cover;
 }
 
 .toable {
@@ -93,10 +113,12 @@ table {
 }
 
 .map-container {
-  /* border-radius: 8px; */
-  /* overflow: hidden; */
-  grid-area: main;
+  /* grid-area: main; */
+  width: 75vw;
+  height: 80vh;
+  object-fit: cover;
 }
+
 
 /* .map-container {
   display: flex;
