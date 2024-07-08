@@ -11,6 +11,7 @@ const MapComponent = ({ }) => {
     <div className="map-container">
       <MapContainer
         className="map-container"
+        center= {[25.35, 51.18]}
         zoom={9}
       >
         <TileLayer

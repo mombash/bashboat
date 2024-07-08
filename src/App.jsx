@@ -143,18 +143,23 @@ const App = () => {
         <h1>BASHBOAT</h1>
         <h2>naval fleet management</h2>
       </div>
-      <div className="map-div">
+      <>
         {/* all vessels map */}
         {isAllDataValid ? (
-          <>
+          <div className="map-div">
             {/* <h1>All Vessels</h1> */}
             {/* <Table extractVesselData={extractVesselData} latestVesselData={Object.values(myLatestVesselData.concat(otherLatestVesselData))} /> */}
             <MapComponent vesselData={{ ...vesselData, ...otherVesselData }} />
-          </>
+          </div>
         ) : (
+          <>
+          <div className="map-div">
+            <EmptyMapComponent />
+          </div>
           <p>Loading vessel data...</p>
+          </>
         )}
-      </div>
+      </>
       <MqttClient
         extractVesselData={extractVesselData}
         onDataReceived={handleDataReceived}
@@ -175,23 +180,19 @@ const App = () => {
                   {/* <MapComponent vesselData={vesselData} /> */}
                 </div>
               ) : (
-                <>
-                {/* <EmptyMapComponent /> */}
-                </>
+                <></>
               )}
             </>
           ) : (
             <>
-            <EmptyMapComponent />
-            <p>Loading my vessel data...</p>
+              <p>Loading my vessel data...</p>
             </>
           )}
         </>
       ) : (
-        <div className="map-div">
-        <EmptyMapComponent />
-        <p>No my vessel data yet...</p>
-        </div>
+        <>
+          <p>No my vessel data yet...</p>
+        </>
       )}
       {typeof someKey !== "undefined" ? (
         <>
@@ -204,25 +205,21 @@ const App = () => {
                 latestVesselData={Object.values(otherLatestVesselData)}
               /> */}
               {!isAllDataValid ? (
-                <div>
-                  {/* <MapComponent vesselData={otherVesselData} /> */}
-                </div>
+                <div>{/* <MapComponent vesselData={otherVesselData} /> */}</div>
               ) : (
                 <></>
               )}
             </>
           ) : (
-            <div className="map-div">
-            <EmptyMapComponent />
-            <p>Loading other vessel data...</p>
-            </div>
+            <>
+              <p>Loading other vessel data...</p>
+            </>
           )}
         </>
       ) : (
-        <div className="map-div">
-        <EmptyMapComponent />
-        <p>No other vessel data yet...</p>
-        </div>
+        <>
+          <p>No other vessel data yet...</p>
+        </>
       )}
     </div>
   );
