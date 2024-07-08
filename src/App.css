@@ -2,21 +2,14 @@
   /* display: flex; */
   justify-content: center;
   align-items: center;
+  justify-content: center;
+  align-content: center;
   height: 100vh;
 }
 
-/* .app-container {
-  display: block;
-  height: 100vh;
-  width: 100vw;
-  margin: 0 auto;
-  justify-content: center;
-  align-items: center;
-} */
-
 .app-container {
-  height: 100vh;
-  width: 100vw;
+  height: calc(100vh - 20px);
+  width: calc(100vw - 8px);
   display: grid;
   grid-template-columns: 20% 80%;
   grid-template-rows: 15% 1fr auto; /* Change 85% to 1fr and 5% to auto */
@@ -24,6 +17,7 @@
     "header header"
     "sidebar main"
     "footer footer";
+  /* grid-gap: 10px; */
 }
 
 .footer {
@@ -33,7 +27,7 @@
   flex-wrap: wrap;
   min-height: 0; /* Allow the footer to collapse */
   overflow: hidden; /* Hide overflow content when collapsed */
-  transition: min-height 0.3s ease; /* Add smooth transition */
+  transition: min-height 0.3s ease;
 }
 
 .footer:not(:empty) {
@@ -47,7 +41,6 @@
   margin: 0 auto;
   grid-area: header;
 }
-
 
 h1,
 h2,
@@ -67,23 +60,6 @@ p {
   grid-area: footer;
 }
 
-table {
-  grid-area: sidebar;
-  display: table;
-  justify-content: center;
-  align-items: center;
-  margin: 0 auto;
-  border-collapse: separate;
-  /* border-radius: 8px; */
-  overflow: hidden;
-  border-spacing: 0;
-  background-color: #f0f0f0; /* Light grey background */
-  color: #333; /* Dark grey text color */
-  text-align: center; /* Center align the content */
-  table-layout: fixed;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Adds a subtle shadow */
-}
-
 .map-div {
   grid-area: main;
   /* width: 75vw; */
@@ -91,34 +67,55 @@ table {
   object-fit: cover;
 }
 
-.toable {
+.sidebar {
+  grid-area: sidebar;
+  display: flex;
+  flex-direction: column;
+  /* box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); */
+}
+
+table {
+  grid-area: sidebar;
+  height: auto;
+  table-layout: fixed;
+  border-collapse: collapse;
+  border-radius: 8px;
+  border: 1px solid #ddd;
+  overflow: hidden;
+  padding: 5px;
+}
+
+.table tr {
+  height: 30px;
+  background-color: rgb(32, 32, 32);
+  text-align: center;
+  border-bottom: 5px solid rgb(63, 63, 63);
+}
+
+.table th {
+  background-color: rgb(63, 63, 63);
+}
+
+/* 
+table {
   grid-area: sidebar;
   display: table;
   justify-content: center;
   align-items: center;
-  /* width: 600px; */
-  margin: 0 auto; /* Horizontally center align */
-  border-collapse: separate; /* Allows for rounded corners */
-  border-spacing: 0; /* Removes spacing between cells */
-  border-radius: 8px; /* Rounded corners for the table */
-  overflow: hidden; /* Ensures the rounded corners are visible */
-  background-color: #f0f0f0; /* Light grey background */
-  color: #333; /* Dark grey text color */
-  text-align: center; /* Center align the content */
-  table-layout: fixed; /* Set table layout to fixed */
-  margin-top: 20px; /* Add margin to top */
-  margin-bottom: 20px; /* Add margin to bottom */
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Adds a subtle shadow */
+  margin: 0 auto;
+  border-collapse: separate;
+  overflow: hidden;
+  border-spacing: 0;
+  background-color: #f0f0f0;
+  color: #333;
+  text-align: center;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
-
-
 
 .table th,
 .table td {
-  /* width: 33%; */
-  /* padding: 12px;  */
   border-bottom: 1px solid #ddd; 
-  text-align: center; 
+  text-align: left; 
 }
 
 .table th {
@@ -128,7 +125,7 @@ table {
 
 .table tr:last-child td {
   border-bottom: none;
-}
+} */
 
 .map-container {
   /* grid-area: main; */
@@ -136,8 +133,10 @@ table {
   height: 100%;
   display: flex;
   object-fit: cover;
+  border-radius: 8px;
+  border: 1px solid #ddd;
+  overflow: hidden;
 }
-
 
 /* .map-container {
   display: flex;

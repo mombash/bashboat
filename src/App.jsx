@@ -183,7 +183,7 @@ document.addEventListener('DOMContentLoaded', updateFooter);
       {typeof mySomeKey !== "undefined" ? (
         <>
           {vesselData[mySomeKey].length >= 1 ? (
-            <>
+            <div className="sidebar">
               {/* <h3>My Vessels</h3> */}
               <Table
                 className="table-div"
@@ -197,7 +197,7 @@ document.addEventListener('DOMContentLoaded', updateFooter);
               ) : (
                 <></>
               )}
-            </>
+            </div>
           ) : (
             <></>
           )}
