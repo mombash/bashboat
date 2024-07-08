@@ -83,6 +83,8 @@ table {
   border: 1px solid #ddd;
   overflow: hidden;
   padding: 5px;
+  width: 100%;
+  table-layout: fixed;
 }
 
 .table tr {

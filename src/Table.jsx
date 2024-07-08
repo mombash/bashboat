@@ -11,15 +11,23 @@ function Table({ latestVesselData }) {
           <th>Location</th>
         </tr>
       </thead>
-      <tbody>
-        {latestVesselData.map((vessel) => (
-          <tr key={vessel.id}>
-            <td>{vessel.id}</td>
-            <td>{vessel.speed}</td>
-            <td>{`${vessel.lat}, ${vessel.lng}`}</td>
+      {latestVesselData.length > 0 ? (
+        <tbody>
+          {latestVesselData.map((vessel) => (
+            <tr key={vessel.id}>
+              <td>{vessel.id}</td>
+              <td>{vessel.speed}</td>
+              <td>{`${vessel.lat}, ${vessel.lng}`}</td>
+            </tr>
+          ))}
+        </tbody>
+      ) : (
+        <tbody>
+          <tr>
+            <td colSpan="3">No data yet...</td>
           </tr>
-        ))}
-      </tbody>
+        </tbody>
+      )}
     </table>
   );
 }

@@ -138,22 +138,22 @@ const App = () => {
   }
 
   function updateFooter() {
-  const footer = document.querySelector('.footer');
-  const footerContent = footer.innerHTML.trim();
-  
-  if (footerContent === '') {
-    footer.style.minHeight = '0';
-    footer.style.padding = '0';
-  } else {
-    footer.style.minHeight = '3vh';
+    const footer = document.querySelector(".footer");
+    const footerContent = footer.innerHTML.trim();
+
+    if (footerContent === "") {
+      footer.style.minHeight = "0";
+      footer.style.padding = "0";
+    } else {
+      footer.style.minHeight = "3vh";
+    }
   }
-}
 
-// Call updateFooter when the page loads
-document.addEventListener('DOMContentLoaded', updateFooter);
+  // Call updateFooter when the page loads
+  document.addEventListener("DOMContentLoaded", updateFooter);
 
-// Call updateFooter whenever the footer content changes
-// You'll need to call this function whenever you add or remove content from the footer
+  // Call updateFooter whenever the footer content changes
+  // You'll need to call this function whenever you add or remove content from the footer
 
   return (
     <div className="app-container">
@@ -179,12 +179,19 @@ document.addEventListener('DOMContentLoaded', updateFooter);
         extractVesselData={extractVesselData}
         onDataReceived={handleDataReceived}
       />
-
-      {typeof mySomeKey !== "undefined" ? (
+      <div className="table-div">
+        <Table
+          className="table-div"
+          latestVesselData={Object.values(
+            myLatestVesselData.concat(otherLatestVesselData)
+          )}
+        />
+      </div>
+      {/* {typeof mySomeKey !== "undefined" ? (
         <>
           {vesselData[mySomeKey].length >= 1 ? (
             <div className="sidebar">
-              {/* <h3>My Vessels</h3> */}
+              <h3>My Vessels</h3>
               <Table
                 className="table-div"
                 extractVesselData={extractVesselData}
@@ -192,7 +199,7 @@ document.addEventListener('DOMContentLoaded', updateFooter);
               />
               {!isAllDataValid ? (
                 <div className="map-div">
-                  {/* <MapComponent vesselData={vesselData} /> */}
+                  <MapComponent vesselData={vesselData} />
                 </div>
               ) : (
                 <></>
@@ -204,7 +211,7 @@ document.addEventListener('DOMContentLoaded', updateFooter);
         </>
       ) : (
         <></>
-      )}
+      )} */}
       {typeof someKey !== "undefined" ? (
         <>
           {otherVesselData[someKey].length >= 1 ? (
