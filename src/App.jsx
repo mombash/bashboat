@@ -137,6 +137,24 @@ const App = () => {
     }
   }
 
+  function updateFooter() {
+  const footer = document.querySelector('.footer');
+  const footerContent = footer.innerHTML.trim();
+  
+  if (footerContent === '') {
+    footer.style.minHeight = '0';
+    footer.style.padding = '0';
+  } else {
+    footer.style.minHeight = '3vh';
+  }
+}
+
+// Call updateFooter when the page loads
+document.addEventListener('DOMContentLoaded', updateFooter);
+
+// Call updateFooter whenever the footer content changes
+// You'll need to call this function whenever you add or remove content from the footer
+
   return (
     <div className="app-container">
       <div className="title-div">
@@ -152,12 +170,9 @@ const App = () => {
             <MapComponent vesselData={{ ...vesselData, ...otherVesselData }} />
           </div>
         ) : (
-          <>
           <div className="map-div">
             <EmptyMapComponent />
           </div>
-          <p>Loading vessel data...</p>
-          </>
         )}
       </>
       <MqttClient
@@ -184,15 +199,11 @@ const App = () => {
               )}
             </>
           ) : (
-            <>
-              <p>Loading my vessel data...</p>
-            </>
+            <></>
           )}
         </>
       ) : (
-        <>
-          <p>No my vessel data yet...</p>
-        </>
+        <></>
       )}
       {typeof someKey !== "undefined" ? (
         <>
@@ -211,16 +222,32 @@ const App = () => {
               )}
             </>
           ) : (
-            <>
-              <p>Loading other vessel data...</p>
-            </>
+            <></>
           )}
         </>
       ) : (
-        <>
-          <p>No other vessel data yet...</p>
-        </>
+        <></>
       )}
+      <div className="footer">
+        {typeof someKey !== "undefined" ? (
+          otherVesselData[someKey].length < 1 ? (
+            <p>Loading other vessel data...</p>
+          ) : (
+            <></>
+          )
+        ) : (
+          <p>No other vessel data yet...</p>
+        )}
+        {typeof mySomeKey !== "undefined" ? (
+          vesselData[mySomeKey].length < 1 ? (
+            <p>Loading my vessel data...</p>
+          ) : (
+            <></>
+          )
+        ) : (
+          <p>No my vessel data yet...</p>
+        )}
+      </div>
     </div>
   );
 };

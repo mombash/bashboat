@@ -15,15 +15,30 @@
 } */
 
 .app-container {
-  height : 100vh;
+  height: 100vh;
   width: 100vw;
   display: grid;
   grid-template-columns: 20% 80%;
-  grid-template-rows: 15% 80% 5%;
-  grid-template-areas: 
+  grid-template-rows: 15% 1fr auto; /* Change 85% to 1fr and 5% to auto */
+  grid-template-areas:
     "header header"
     "sidebar main"
     "footer footer";
+}
+
+.footer {
+  grid-area: footer;
+  display: flex;
+  justify-content: space-around;
+  flex-wrap: wrap;
+  min-height: 0; /* Allow the footer to collapse */
+  overflow: hidden; /* Hide overflow content when collapsed */
+  transition: min-height 0.3s ease; /* Add smooth transition */
+}
+
+.footer:not(:empty) {
+  min-height: 5vh; /* Set a minimum height when not empty */
+  padding: 10px 0; /* Add some padding when not empty */
 }
 
 .title-div {
@@ -38,6 +53,7 @@ h1,
 h2,
 h3,
 p {
+  display: block;
   text-align: center;
 }
 
