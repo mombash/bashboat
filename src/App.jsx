@@ -21,8 +21,8 @@ const App = () => {
   const [vesselData, setMyVesselData] = useState({});
   const [otherVesselData, setOtherVesselData] = useState({});
   const [isAllDataValid, setIsAllDataValid] = useState(false);
-  const [buttonState, setButtonState] = useState(false); // Add this line
-
+  const [showOtherVessels, toggleShowOtherVessels] = useState(false);
+  const [showVesselPath, toggleShowVesselPath] = useState(false);
 
   // Utility function to extract vessel data
   const extractVesselData = (data) => {
@@ -157,7 +157,7 @@ const App = () => {
   // Call updateFooter whenever the footer content changes
   // You'll need to call this function whenever you add or remove content from the footer
 
-  console.log("Button State: ", buttonState);
+  console.log("Button State: ", showOtherVessels);
 
   return (
     <div className="app-container">
@@ -165,10 +165,20 @@ const App = () => {
         <h1>BASHBOAT</h1>
         <h2>naval fleet management</h2>
         <button
-          className="toggle-button"
-          onClick={() => setButtonState(!buttonState)}
+          className="show-vessel-button"
+          onClick={() => toggleShowOtherVessels(!showOtherVessels)}
         >
-          {buttonState ? "Click to hide other vessels" : "Click to show other vessels"}
+          {showOtherVessels
+            ? "Click to hide other vessels"
+            : "Click to show other vessels"}
+        </button>
+        <button
+          className="show-path-button"
+          onClick={() => toggleShowVesselPath(!showVesselPath)}
+        >
+          {showVesselPath
+            ? "Click to hide vessel path"
+            : "Click to show vessel path"}
         </button>
       </div>
       <>
@@ -177,7 +187,11 @@ const App = () => {
           <div className="map-div">
             {/* <h1>All Vessels</h1> */}
             {/* <Table extractVesselData={extractVesselData} latestVesselData={Object.values(myLatestVesselData.concat(otherLatestVesselData))} /> */}
-            <MapComponent vesselData={{ ...vesselData, ...otherVesselData }} />
+            <MapComponent
+              showVesselPath={showVesselPath}
+              showOtherVessels={showOtherVessels}
+              vesselData={{ ...vesselData, ...otherVesselData }}
+            />
           </div>
         ) : (
           <div className="map-div">
@@ -190,22 +204,19 @@ const App = () => {
         onDataReceived={handleDataReceived}
       />
       <div className="table-div">
-        {buttonState ? (
+        {showOtherVessels ? (
           <Table
-          className="table-div"
-          latestVesselData={Object.values(
-            myLatestVesselData.concat(otherLatestVesselData)
-          )}
-        />
+            className="table-div"
+            latestVesselData={Object.values(
+              myLatestVesselData.concat(otherLatestVesselData)
+            )}
+          />
         ) : (
           <Table
-          className="table-div"
-          latestVesselData={Object.values(
-            myLatestVesselData
-          )}
-        />
+            className="table-div"
+            latestVesselData={Object.values(myLatestVesselData)}
+          />
         )}
-        
       </div>
       {/* {typeof mySomeKey !== "undefined" ? (
         <>

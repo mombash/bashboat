@@ -11,7 +11,7 @@ import "./App.css";
 import marker from "./myVessel-map-marker.png";
 import otherMarker from "./otherVessel-map-marker.png";
 
-const MapComponent = ({ vesselData }) => {
+const MapComponent = ({ vesselData , showOtherVessels , showVesselPath}) => {
   console.log("mapC Vessel data:", vesselData);
   const vesselEntries = Object.entries(vesselData).map(([id, positions]) => ({
     id,
@@ -48,32 +48,37 @@ const MapComponent = ({ vesselData }) => {
             popupAnchor: [1, -34], // Point from which the popup should open relative to the iconAnchor
           });
           console.log("Vessel:", vessel);
-          return (
-            <Marker
-              key={`${vessel.id}-latest`}
-              position={latestPosition}
-              icon={customIcon}
-            >
-              <Popup>
-                Vessel ID: {vessel.id}
-                <br />
-                Latitude: {latestPosition[0]}
-                <br />
-                Longitude: {latestPosition[1]} <br />
-                Owner: {vessel.owner}
-              </Popup>
-            </Marker>
-          );
+          if (showOtherVessels || vessel.owner === "myVessel") {
+            return (
+              <Marker
+                key={`${vessel.id}-latest`}
+                position={latestPosition}
+                icon={customIcon}
+              >
+                <Popup>
+                  Vessel ID: {vessel.id}
+                  <br />
+                  Latitude: {latestPosition[0]}
+                  <br />
+                  Longitude: {latestPosition[1]} <br />
+                  Owner: {vessel.owner}
+                </Popup>
+              </Marker>
+            );
+          }
+          return null;
         })}
-        {vesselEntries.map((vessel, index) => (
-          <Polyline
-            key={`path-${vessel.id}`}
-            pathOptions={{
-              ...options,
-              color: `hsl(${(index * 360) / vesselEntries.length}, 100%, 50%)`,
-            }}
-            positions={vessel.positions}
-          />
+        {showVesselPath && vesselEntries.map((vessel, index) => (
+          vessel.owner === "myVessel" && (
+            <Polyline
+              key={`path-${vessel.id}`}
+              pathOptions={{
+                ...options,
+                color: `hsl(${(index * 360) / vesselEntries.length}, 100%, 50%)`,
+              }}
+              positions={vessel.positions}
+            />
+          )
         ))}
       </MapContainer>
     </div>

@@ -42,9 +42,16 @@
   grid-area: header;
 }
 
-.toggle-button {
+.show-vessel-button {
   position: absolute;
   top: 10px; /* Adjust as needed */
+  right: 10px; /* Adjust as needed */
+  /* Add any additional styling for your button here */
+}
+
+.show-path-button {
+  position: absolute;
+  top: 60px; /* Adjust as needed */
   right: 10px; /* Adjust as needed */
   /* Add any additional styling for your button here */
 }
