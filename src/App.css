@@ -42,6 +42,13 @@
   grid-area: header;
 }
 
+.toggle-button {
+  position: absolute;
+  top: 10px; /* Adjust as needed */
+  right: 10px; /* Adjust as needed */
+  /* Add any additional styling for your button here */
+}
+
 h1,
 h2,
 h3,

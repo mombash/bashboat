@@ -21,6 +21,8 @@ const App = () => {
   const [vesselData, setMyVesselData] = useState({});
   const [otherVesselData, setOtherVesselData] = useState({});
   const [isAllDataValid, setIsAllDataValid] = useState(false);
+  const [buttonState, setButtonState] = useState(false); // Add this line
+
 
   // Utility function to extract vessel data
   const extractVesselData = (data) => {
@@ -155,11 +157,19 @@ const App = () => {
   // Call updateFooter whenever the footer content changes
   // You'll need to call this function whenever you add or remove content from the footer
 
+  console.log("Button State: ", buttonState);
+
   return (
     <div className="app-container">
       <div className="title-div">
         <h1>BASHBOAT</h1>
         <h2>naval fleet management</h2>
+        <button
+          className="toggle-button"
+          onClick={() => setButtonState(!buttonState)}
+        >
+          {buttonState ? "Click to hide other vessels" : "Click to show other vessels"}
+        </button>
       </div>
       <>
         {/* all vessels map */}
@@ -180,12 +190,22 @@ const App = () => {
         onDataReceived={handleDataReceived}
       />
       <div className="table-div">
-        <Table
+        {buttonState ? (
+          <Table
           className="table-div"
           latestVesselData={Object.values(
             myLatestVesselData.concat(otherLatestVesselData)
           )}
         />
+        ) : (
+          <Table
+          className="table-div"
+          latestVesselData={Object.values(
+            myLatestVesselData
+          )}
+        />
+        )}
+        
       </div>
       {/* {typeof mySomeKey !== "undefined" ? (
         <>
