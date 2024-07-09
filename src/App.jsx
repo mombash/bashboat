@@ -164,6 +164,16 @@ const App = () => {
       <div className="title-div">
         <h1>BASHBOAT</h1>
         <h2>naval fleet management</h2>
+        <div className="status-indicators">
+          <div className="status-indicator">
+            <span className="status-square red"></span>
+            <span>Your Vessels</span>
+          </div>
+          <div className="status-indicator">
+            <span className="status-square blue"></span>
+            <span>Other Vessels</span>
+          </div>
+        </div>
         <button
           className="show-vessel-button"
           onClick={() => toggleShowOtherVessels(!showOtherVessels)}

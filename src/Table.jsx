@@ -14,7 +14,7 @@ function Table({ latestVesselData }) {
       {latestVesselData.length > 0 ? (
         <tbody>
           {latestVesselData.map((vessel) => (
-            <tr key={vessel.id}>
+            <tr key={vessel.id} className={vessel.owner === "myVessel" ? "my-vessel" : "other-vessel"}>
               <td>{vessel.id}</td>
               <td>{vessel.speed}</td>
               <td>{`${vessel.lat}, ${vessel.lng}`}</td>
