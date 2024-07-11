@@ -28,6 +28,9 @@ const MqttClient = ({ onDataReceived, extractVesselData }) => {
       });
     });
 
+    let measurements = {};
+    let navigation = {};
+
     mqttClient.on("message", (topic, message) => {
       try {
         const data = JSON.parse(message.toString());
@@ -35,11 +38,39 @@ const MqttClient = ({ onDataReceived, extractVesselData }) => {
         if (topic === "test-topic") {
           setLastMessageTime(Date.now());
           setHasReceivedValidData(true); // Set to true when valid data is received
+          navigation = data
+          console.log("MQTTCLIENT: Received navigation data:", navigation);
+        }
+        if (topic === "test-topic/measurments") {
+          setLastMessageTime(Date.now());
+          setHasReceivedValidData(true); // Set to true when valid data is received
+          measurements = data
+          console.log("MQTTCLIENT: Received measurements:", measurements);
+        }
 
-          const vesselData = extractVesselData(data);
+        console.log("MQTTCLIENT: Navigation keys ", Object.keys(navigation));
+        
+        if (Object.keys(navigation).length === 0 && Object.keys(measurements).length === 0) {
+          console.log("MQTTCLIENT: No data received yet");
+          return;
+        }
+        else if (Object.keys(navigation).length !== 0 && Object.keys(measurements).length === 0) {
+          console.log("MQTTCLIENT: Extracted navigation data only, vessel data:");
+          const vesselData = extractVesselData({navigation});
           onDataReceived(vesselData);
         }
-        // No additional action needed for "test-topic/measurement" as logging is already done
+        else if (Object.keys(navigation).length === 0 && Object.keys(measurements).length !== 0) {
+          console.log("MQTTCLIENT: Extracted measurements data only, vessel data:");
+          const vesselData = extractVesselData({measurements});
+          onDataReceived(vesselData);
+        }
+        else {
+          console.log("MQTTCLIENT: Extracted both navigation and measurements data, vessel data:");
+          const vesselData = extractVesselData({navigation, measurements});
+          onDataReceived(vesselData);
+        }
+        
+
       } catch (error) {
         console.error("Error parsing message:", error);
       }

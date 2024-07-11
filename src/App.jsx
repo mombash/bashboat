@@ -7,15 +7,6 @@ import "./App.css";
 
 // unique to formatting
 
-function getLatestVessels(vesselData) {
-  const latestVessels = {};
-  vesselData.forEach((vessel) => {
-    // Assuming vessel.id is the unique identifier for each vessel
-    latestVessels[vessel.id] = vessel;
-  });
-  return Object.values(latestVessels);
-}
-
 const App = () => {
   // const [vesselData, setVesselData] = useState({});
   const [vesselData, setMyVesselData] = useState({});
@@ -24,6 +15,15 @@ const App = () => {
   const [showOtherVessels, toggleShowOtherVessels] = useState(false);
   const [showVesselPath, toggleShowVesselPath] = useState(false);
 
+  function getLatestVessels(vesselData) {
+    const latestVessels = {};
+    vesselData.forEach((vessel) => {
+      // Assuming vessel.id is the unique identifier for each vessel
+      latestVessels[vessel.id] = vessel;
+    });
+    return Object.values(latestVessels);
+  }
+  
   // Utility function to extract vessel data
   const extractVesselData = (data) => {
     return data.updates
