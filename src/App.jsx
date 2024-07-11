@@ -174,40 +174,44 @@ const App = () => {
             <span>Other Vessels</span>
           </div>
         </div>
-        <button
-          className="show-vessel-button"
-          onClick={() => toggleShowOtherVessels(!showOtherVessels)}
-        >
-          {showOtherVessels
-            ? "Click to hide other vessels"
-            : "Click to show other vessels"}
-        </button>
-        <button
-          className="show-path-button"
-          onClick={() => toggleShowVesselPath(!showVesselPath)}
-        >
-          {showVesselPath
-            ? "Click to hide vessel path"
-            : "Click to show vessel path"}
-        </button>
       </div>
       <>
-        {/* all vessels map */}
-        {isAllDataValid ? (
-          <div className="map-div">
-            {/* <h1>All Vessels</h1> */}
-            {/* <Table extractVesselData={extractVesselData} latestVesselData={Object.values(myLatestVesselData.concat(otherLatestVesselData))} /> */}
+        <div className="map-div">
+          {/* all vessels map */}
+          <button
+            className={`show-path-button ${
+              showVesselPath ? "path-enabled" : "path-disabled"
+            }`}
+            onClick={() => toggleShowVesselPath(!showVesselPath)}
+            title={
+              showOtherVessels
+                ? "Showing your vessel paths.\nClick to hide."
+                : "Hiding your vessel paths.\nClick to show."
+            }
+          ></button>
+          <button
+            className={`show-vessel-button ${
+              showOtherVessels ? "vessel-enabled" : "vessel-disabled"
+            }`}
+            onClick={() => toggleShowOtherVessels(!showOtherVessels)}
+            title={
+              showOtherVessels
+                ? "Showing only your vessels.\nClick to show other vessels."
+                : "Showing other vessels.\nClick to hide."
+            }
+          ></button>
+          {/* <h1>All Vessels</h1> */}
+          {/* <Table extractVesselData={extractVesselData} latestVesselData={Object.values(myLatestVesselData.concat(otherLatestVesselData))} /> */}
+          {isAllDataValid ? (
             <MapComponent
               showVesselPath={showVesselPath}
               showOtherVessels={showOtherVessels}
               vesselData={{ ...vesselData, ...otherVesselData }}
             />
-          </div>
-        ) : (
-          <div className="map-div">
+          ) : (
             <EmptyMapComponent />
-          </div>
-        )}
+          )}
+        </div>
       </>
       <MqttClient
         extractVesselData={extractVesselData}

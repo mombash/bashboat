@@ -43,15 +43,56 @@
 }
 
 .show-vessel-button {
+  background-size: contain; /* Ensures the logo fits within the button */
+  background-repeat: no-repeat;
+  background-position: center; /* Centers the logo */
+  width: 50px; /* Adjust based on your logo size */
+  height: 50px; /* Adjust based on your logo size */
+  border: none;
+  padding: 10; /* Adjust padding as needed */
   position: absolute;
   top: 10px; /* Adjust as needed */
   right: 10px; /* Adjust as needed */
-  /* Add any additional styling for your button here */
+  z-index: 1000;
+}
+
+.vessel-enabled {
+  background-image: url('./ship.png');
+  background-color: rgb(235, 235, 235);
+}
+
+.vessel-disabled {
+  background-image: url('./ship-disabled.png');
+  background-color: rgb(87, 87, 87);
+}
+
+.show-path-button {
+  background-size: contain; /* Ensures the logo fits within the button */
+  background-repeat: no-repeat;
+  background-position: center; /* Centers the logo */
+  width: 50px; /* Adjust based on your logo size */
+  height: 50px; /* Adjust based on your logo size */
+  border: none;
+  padding: 10; /* Adjust padding as needed */
+  position: absolute;
+  top: 90px; /* Adjust as needed */
+  right: 10px; /* Adjust as needed */
+  z-index: 1000;
+}
+
+.path-enabled {
+  background-image: url('./path.png');
+  background-color: rgb(235, 235, 235);
+}
+
+.path-disabled {
+  background-image: url('./path-disabled.png');
+  background-color: rgb(87, 87, 87);
 }
 
 .show-path-button {
   position: absolute;
-  top: 60px; /* Adjust as needed */
+  top: 70px; /* Adjust as needed */
   right: 10px; /* Adjust as needed */
   /* Add any additional styling for your button here */
 }
@@ -107,6 +148,7 @@ p {
   /* width: 75vw; */
   /* height: 80vh; */
   object-fit: cover;
+  position: relative;
 }
 
 .sidebar {
