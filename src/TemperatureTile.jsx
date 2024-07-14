@@ -1,13 +1,18 @@
 import React from "react";
-import "./TemperatureTile.css";
 
 const TemperatureTile = ({ temperature }) => {
-  return (
-    <div className="temperature-tile">
-      <div>Temperature</div>
-      <div className="temperature-value">{temperature}</div>
-    </div>
-  );
+    return (
+        <table className="temperature-tile">
+            <tbody>
+                <tr>
+                    <td>Temperature</td>
+                </tr>
+                <tr>
+                    <td className="temperature-value">{temperature}</td>
+                </tr>
+            </tbody>
+        </table>
+    );
 };
 
 export default TemperatureTile;

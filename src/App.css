@@ -97,6 +97,13 @@
   /* Add any additional styling for your button here */
 }
 
+.choose-dashboard-button {
+  position: absolute;
+  top: 10px; /* Adjust as needed */
+  right: 10px; /* Adjust as needed */
+  /* Add any additional styling for your button here */
+}
+
 .status-indicators {
   position: absolute;
   bottom: 10px; /* Adjust as needed */
@@ -190,37 +197,6 @@ table {
   background-color: hsla(217, 100%, 50%, 0.352);
 }
 
-/* 
-table {
-  grid-area: sidebar;
-  display: table;
-  justify-content: center;
-  align-items: center;
-  margin: 0 auto;
-  border-collapse: separate;
-  overflow: hidden;
-  border-spacing: 0;
-  background-color: #f0f0f0;
-  color: #333;
-  text-align: center;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-}
-
-.table th,
-.table td {
-  border-bottom: 1px solid #ddd; 
-  text-align: left; 
-}
-
-.table th {
-  background-color: #4d4d4d;
-  color: #ffffff;
-}
-
-.table tr:last-child td {
-  border-bottom: none;
-} */
-
 .map-container {
   /* grid-area: main; */
   width: 100%;
@@ -232,12 +208,11 @@ table {
   overflow: hidden;
 }
 
-/* .map-container {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  width: 600px;
-  height: 400px;
-  overflow: hidden;
-  margin: 0 auto;
-} */
+.temperature-tile {
+  margin: 0 auto; /* Center the table horizontally */
+  width: 300px;
+  background-color: grey;
+  color: white;
+  text-align: center;
+  font-size: large;
+}

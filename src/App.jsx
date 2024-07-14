@@ -3,9 +3,19 @@ import MqttClient from "./MqttClient";
 import MapComponent from "./MapComponent";
 import EmptyMapComponent from "./EmptyMapComponent";
 import Table from "./Table";
+import TemperatureTile from "./TemperatureTile";
 import "./App.css";
 
 // unique to formatting
+
+function getLatestVessels(vesselData) {
+  const latestVessels = {};
+  vesselData.forEach((vessel) => {
+    // Assuming vessel.id is the unique identifier for each vessel
+    latestVessels[vessel.id] = vessel;
+  });
+  return Object.values(latestVessels);
+}
 
 const App = () => {
   // const [vesselData, setVesselData] = useState({});
@@ -14,18 +24,11 @@ const App = () => {
   const [isAllDataValid, setIsAllDataValid] = useState(false);
   const [showOtherVessels, toggleShowOtherVessels] = useState(false);
   const [showVesselPath, toggleShowVesselPath] = useState(false);
+  const [showDashboard, toggleShowDashboard] = useState(false);
 
-  function getLatestVessels(vesselData) {
-    const latestVessels = {};
-    vesselData.forEach((vessel) => {
-      // Assuming vessel.id is the unique identifier for each vessel
-      latestVessels[vessel.id] = vessel;
-    });
-    return Object.values(latestVessels);
-  }
-  
   // Utility function to extract vessel data
   const extractVesselData = (data) => {
+    console.log("EXTRACTVESSELDATA: Extracting vessel data:", data);
     return data.updates
       .map((update) => {
         const position = update.values.find(
@@ -38,12 +41,21 @@ const App = () => {
           "vessels.urn:mrn:signalk:uuid:"
         );
 
-        if (
+        const isNavDataValid =
           position &&
           position.value.latitude !== null &&
-          position.value.longitude !== null
-        ) {
-          const uuid = data.context.split(":").pop();
+          position.value.longitude !== null;
+        const isMeasureDataValid =
+          data.temperature !== null &&
+          data.humidity !== null &&
+          data.pressure !== null;
+
+        const uuid = data.context.split(":").pop();
+
+        if (isNavDataValid && !isMeasureDataValid) {
+          console.log(
+            "EXTRACTVESSELDATA: Extracted navigation data only, vessel data:"
+          );
           return {
             id: uuid,
             lat: position.value.latitude,
@@ -51,7 +63,33 @@ const App = () => {
             speed: speed?.value || 0,
             owner: isMyVessel ? "myVessel" : "otherVessel",
           };
+        } else if (!isNavDataValid && isMeasureDataValid) {
+          console.log(
+            "EXTRACTVESSELDATA: Extracted measurements data only, vessel data:"
+          );
+          return {
+            id: uuid,
+            temperature: data.temperature,
+            humidity: data.humidity,
+            pressure: data.pressure,
+            owner: isMyVessel ? "myVessel" : "otherVessel",
+          };
+        } else {
+          console.log(
+            "EXTRACTVESSELDATA: Extracted both measurement and naviagtion data, vessel data:"
+          );
+          return {
+            id: uuid,
+            lat: position.value.latitude,
+            lng: position.value.longitude,
+            speed: speed?.value || 0,
+            temperature: data.temperature,
+            humidity: data.humidity,
+            pressure: data.pressure,
+            owner: isMyVessel ? "myVessel" : "otherVessel",
+          };
         }
+
         return null;
       })
       .filter((item) => item !== null); // Filter out invalid positions
@@ -126,6 +164,36 @@ const App = () => {
   const otherFlattenedVesselData = Object.values(otherVesselData).flat(2);
   const otherLatestVesselData = getLatestVessels(otherFlattenedVesselData);
 
+  const myLatestTemperatures = myLatestVesselData.reduce((acc, vessel) => {
+    return {
+      ...acc,
+      [vessel.id]: vessel.temperature,
+    };
+  }, {});
+  const myLatestHumidities = myLatestVesselData.reduce((acc, vessel) => {
+    return {
+      ...acc,
+      [vessel.id]: vessel.humidity,
+    };
+  }, {});
+  const myLatestPressures = myLatestVesselData.reduce((acc, vessel) => {
+    return {
+      ...acc,
+      [vessel.id]: vessel.pressure,
+    };
+  }, {});
+  const myLatestMeasurements = myLatestVesselData.reduce((acc, vessel) => {
+    return {
+      ...acc,
+      [vessel.id]: {
+        temperature: vessel.temperature,
+        humidity: vessel.humidity,
+        pressure: vessel.pressure,
+      },
+    };
+  }, {});
+  console.log("APP: My latest measurements:", myLatestMeasurements);
+
   if (typeof mySomeKey !== "undefined" && typeof someKey !== "undefined") {
     console.log("some data is valid");
     if (
@@ -160,115 +228,136 @@ const App = () => {
   console.log("Button State: ", showOtherVessels);
 
   return (
-    <div className="app-container">
-      <div className="title-div">
-        <h1>BASHBOAT</h1>
-        <h2>naval fleet management</h2>
-        <div className="status-indicators">
-          <div className="status-indicator">
-            <span className="status-square red"></span>
-            <span>Your Vessels</span>
+    <>
+      <button
+        className={`choose-dashboard-button ${
+          showDashboard ? "dashboard-enabled" : "dashboard-disabled"
+        }`}
+        onClick={() => toggleShowDashboard(!showDashboard)}
+        title={
+          showDashboard
+            ? "Showing Dashboard View.\nClick to return to App View."
+            : "Showing App View.\nClick to show Dashboard View."
+        }
+      >
+        {showDashboard ? "Back to App" : "Go to Dashboard"}
+      </button>
+      {!showDashboard ? (
+        <div className="app-container">
+          <div className="title-div">
+            <h1>BASHBOAT</h1>
+            <h2>naval fleet management</h2>
+            <div className="status-indicators">
+              <div className="status-indicator">
+                <span className="status-square red"></span>
+                <span>Your Vessels</span>
+              </div>
+              <div className="status-indicator">
+                <span className="status-square blue"></span>
+                <span>Other Vessels</span>
+              </div>
+            </div>
           </div>
-          <div className="status-indicator">
-            <span className="status-square blue"></span>
-            <span>Other Vessels</span>
-          </div>
-        </div>
-      </div>
-      <>
-        <div className="map-div">
-          {/* all vessels map */}
-          <button
-            className={`show-path-button ${
-              showVesselPath ? "path-enabled" : "path-disabled"
-            }`}
-            onClick={() => toggleShowVesselPath(!showVesselPath)}
-            title={
-              showOtherVessels
-                ? "Showing your vessel paths.\nClick to hide."
-                : "Hiding your vessel paths.\nClick to show."
-            }
-          ></button>
-          <button
-            className={`show-vessel-button ${
-              showOtherVessels ? "vessel-enabled" : "vessel-disabled"
-            }`}
-            onClick={() => toggleShowOtherVessels(!showOtherVessels)}
-            title={
-              showOtherVessels
-                ? "Showing only your vessels.\nClick to show other vessels."
-                : "Showing other vessels.\nClick to hide."
-            }
-          ></button>
-          {/* <h1>All Vessels</h1> */}
-          {/* <Table extractVesselData={extractVesselData} latestVesselData={Object.values(myLatestVesselData.concat(otherLatestVesselData))} /> */}
-          {isAllDataValid ? (
-            <MapComponent
-              showVesselPath={showVesselPath}
-              showOtherVessels={showOtherVessels}
-              vesselData={{ ...vesselData, ...otherVesselData }}
-            />
-          ) : (
-            <EmptyMapComponent />
-          )}
-        </div>
-      </>
-      <MqttClient
-        extractVesselData={extractVesselData}
-        onDataReceived={handleDataReceived}
-      />
-      <div className="table-div">
-        {showOtherVessels ? (
-          <Table
-            className="table-div"
-            latestVesselData={Object.values(
-              myLatestVesselData.concat(otherLatestVesselData)
-            )}
+          <>
+            <div className="map-div">
+              {/* all vessels map */}
+              <button
+                className={`show-path-button ${
+                  showVesselPath ? "path-enabled" : "path-disabled"
+                }`}
+                onClick={() => toggleShowVesselPath(!showVesselPath)}
+                title={
+                  showOtherVessels
+                    ? "Showing your vessel paths.\nClick to hide."
+                    : "Hiding your vessel paths.\nClick to show."
+                }
+              ></button>
+              <button
+                className={`show-vessel-button ${
+                  showOtherVessels ? "vessel-enabled" : "vessel-disabled"
+                }`}
+                onClick={() => toggleShowOtherVessels(!showOtherVessels)}
+                title={
+                  showOtherVessels
+                    ? "Showing only your vessels.\nClick to show other vessels."
+                    : "Showing other vessels.\nClick to hide."
+                }
+              ></button>
+              {/* <h1>All Vessels</h1> */}
+              {/* <Table extractVesselData={extractVesselData} latestVesselData={Object.values(myLatestVesselData.concat(otherLatestVesselData))} /> */}
+              {isAllDataValid ? (
+                <MapComponent
+                  showVesselPath={showVesselPath}
+                  showOtherVessels={showOtherVessels}
+                  vesselData={{ ...vesselData, ...otherVesselData }}
+                />
+              ) : (
+                <EmptyMapComponent />
+              )}
+            </div>
+          </>
+          <MqttClient
+            extractVesselData={extractVesselData}
+            onDataReceived={handleDataReceived}
           />
-        ) : (
-          <Table
-            className="table-div"
-            latestVesselData={Object.values(myLatestVesselData)}
-          />
-        )}
-      </div>
-      {/* {typeof mySomeKey !== "undefined" ? (
-        <>
-          {vesselData[mySomeKey].length >= 1 ? (
-            <div className="sidebar">
-              <h3>My Vessels</h3>
+          <div className="table-div">
+            {showOtherVessels ? (
               <Table
                 className="table-div"
-                extractVesselData={extractVesselData}
+                latestVesselData={Object.values(
+                  myLatestVesselData.concat(otherLatestVesselData)
+                )}
+              />
+            ) : (
+              <Table
+                className="table-div"
                 latestVesselData={Object.values(myLatestVesselData)}
               />
+            )}
+          </div>
+          {/* {typeof mySomeKey !== "undefined" ? (
+        <>
+        {vesselData[mySomeKey].length >= 1 ? (
+          <div className="sidebar">
+          <h3>My Vessels</h3>
+          <Table
+          className="table-div"
+          extractVesselData={extractVesselData}
+          latestVesselData={Object.values(myLatestVesselData)}
+          />
               {!isAllDataValid ? (
                 <div className="map-div">
                   <MapComponent vesselData={vesselData} />
-                </div>
+                  </div>
               ) : (
                 <></>
-              )}
+                )}
             </div>
-          ) : (
+            ) : (
             <></>
-          )}
+            )}
         </>
-      ) : (
-        <></>
+        ) : (
+          <></>
       )} */}
-      {typeof someKey !== "undefined" ? (
-        <>
-          {otherVesselData[someKey].length >= 1 ? (
+          {typeof someKey !== "undefined" ? (
             <>
-              {/* <h3>Other Vessels</h3> */}
-              {/* <Table
+              {otherVesselData[someKey].length >= 1 ? (
+                <>
+                  {/* <h3>Other Vessels</h3> */}
+                  {/* <Table
                 className="table-div"
                 extractVesselData={extractVesselData}
                 latestVesselData={Object.values(otherLatestVesselData)}
-              /> */}
-              {!isAllDataValid ? (
-                <div>{/* <MapComponent vesselData={otherVesselData} /> */}</div>
+                /> */}
+                  {!isAllDataValid ? (
+                    <div>
+                      {/* <MapComponent vesselData={otherVesselData} /> */}
+                    </div>
+                  ) : (
+                    <></>
+                  )}
+                </>
               ) : (
                 <></>
               )}
@@ -276,31 +365,35 @@ const App = () => {
           ) : (
             <></>
           )}
-        </>
+          <div className="footer">
+            {typeof someKey !== "undefined" ? (
+              otherVesselData[someKey].length < 1 ? (
+                <p>Loading other vessel data...</p>
+              ) : (
+                <></>
+              )
+            ) : (
+              <p>No other vessel data yet...</p>
+            )}
+            {typeof mySomeKey !== "undefined" ? (
+              vesselData[mySomeKey].length < 1 ? (
+                <p>Loading my vessel data...</p>
+              ) : (
+                <></>
+              )
+            ) : (
+              <p>No my vessel data yet...</p>
+            )}
+          </div>
+        </div>
       ) : (
-        <></>
+        <TemperatureTile
+          temperature={
+            myLatestTemperatures[Object.keys(myLatestTemperatures)[0]]
+          }
+        />
       )}
-      <div className="footer">
-        {typeof someKey !== "undefined" ? (
-          otherVesselData[someKey].length < 1 ? (
-            <p>Loading other vessel data...</p>
-          ) : (
-            <></>
-          )
-        ) : (
-          <p>No other vessel data yet...</p>
-        )}
-        {typeof mySomeKey !== "undefined" ? (
-          vesselData[mySomeKey].length < 1 ? (
-            <p>Loading my vessel data...</p>
-          ) : (
-            <></>
-          )
-        ) : (
-          <p>No my vessel data yet...</p>
-        )}
-      </div>
-    </div>
+    </>
   );
 };
 

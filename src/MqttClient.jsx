@@ -56,17 +56,17 @@ const MqttClient = ({ onDataReceived, extractVesselData }) => {
         }
         else if (Object.keys(navigation).length !== 0 && Object.keys(measurements).length === 0) {
           console.log("MQTTCLIENT: Extracted navigation data only, vessel data:");
-          const vesselData = extractVesselData({navigation});
+          const vesselData = extractVesselData({...navigation});
           onDataReceived(vesselData);
         }
         else if (Object.keys(navigation).length === 0 && Object.keys(measurements).length !== 0) {
           console.log("MQTTCLIENT: Extracted measurements data only, vessel data:");
-          const vesselData = extractVesselData({measurements});
+          const vesselData = extractVesselData({...measurements});
           onDataReceived(vesselData);
         }
         else {
           console.log("MQTTCLIENT: Extracted both navigation and measurements data, vessel data:");
-          const vesselData = extractVesselData({navigation, measurements});
+          const vesselData = extractVesselData({...navigation, ...measurements});
           onDataReceived(vesselData);
         }
         
