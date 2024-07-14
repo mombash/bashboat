@@ -38,13 +38,13 @@ const MqttClient = ({ onDataReceived, extractVesselData }) => {
         if (topic === "test-topic") {
           setLastMessageTime(Date.now());
           setHasReceivedValidData(true); // Set to true when valid data is received
-          navigation = data
+          navigation = data;
           console.log("MQTTCLIENT: Received navigation data:", navigation);
         }
         if (topic === "test-topic/measurments") {
           setLastMessageTime(Date.now());
           setHasReceivedValidData(true); // Set to true when valid data is received
-          measurements = data
+          measurements = data;
           console.log("MQTTCLIENT: Received measurements:", measurements);
         }
 
@@ -57,17 +57,38 @@ const MqttClient = ({ onDataReceived, extractVesselData }) => {
         else if (Object.keys(navigation).length !== 0 && Object.keys(measurements).length === 0) {
           console.log("MQTTCLIENT: Extracted navigation data only, vessel data:");
           const vesselData = extractVesselData({...navigation});
+          console.log("MQTTCLIENT: Navigation Vessel Data format:", vesselData);
           onDataReceived(vesselData);
         }
         else if (Object.keys(navigation).length === 0 && Object.keys(measurements).length !== 0) {
           console.log("MQTTCLIENT: Extracted measurements data only, vessel data:");
           const vesselData = extractVesselData({...measurements});
+          console.log("MQTTCLIENT: Measurements Vessel Data format:", vesselData);
           onDataReceived(vesselData);
         }
         else {
           console.log("MQTTCLIENT: Extracted both navigation and measurements data, vessel data:");
-          const vesselData = extractVesselData({...navigation, ...measurements});
-          onDataReceived(vesselData);
+          console.log("MQTTCLIENT: Navigation format", navigation);
+          const vesselData = Object.keys(navigation.updates).reduce((acc, vesselId) => {
+            console.log("MQTTCLIENT: Vessel ID DEBUG:", vesselId);
+            const vesselUUID = navigation.context.split(":").pop();
+            console.log("MQTTCLIENT: Context DEBUG:", vesselUUID);
+            console.log("MQTTCLIENT: Measurements format:", measurements);
+            console.log("MQTTCLIENT: Measurements context:", measurements.vessel_uuid);
+            if (measurements.vessel_uuid === vesselUUID) {
+              console.log("MQTTCLIENT: match found for vessel:", vesselUUID);
+              const combinedData = { ...navigation, ...measurements };
+              const extractedData = extractVesselData(combinedData);
+              acc.push(extractedData);
+            } else {
+              console.log("MQTTCLIENT: match not found for vessel:", vesselUUID);
+              const extractedData = extractVesselData({...navigation});
+              acc.push(extractedData);
+            }
+            return acc;
+          }, []);
+          console.log("MQTTCLIENT: both datas mixed and fixed?:",vesselData[0]);
+          onDataReceived(vesselData[0]);
         }
         
 

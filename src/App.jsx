@@ -184,14 +184,17 @@ const App = () => {
     };
   }, {});
   const myLatestMeasurements = myLatestVesselData.reduce((acc, vessel) => {
-    return {
-      ...acc,
-      [vessel.id]: {
-        temperature: vessel.temperature,
-        humidity: vessel.humidity,
-        pressure: vessel.pressure,
-      },
-    };
+    if (vessel.temperature !== undefined && vessel.humidity !== undefined && vessel.pressure !== undefined) {
+      return {
+        ...acc,
+        [vessel.id]: {
+          temperature: vessel.temperature,
+          humidity: vessel.humidity,
+          pressure: vessel.pressure,
+        },
+      };
+    }
+    return acc;
   }, {});
   console.log("APP: My latest measurements:", myLatestMeasurements);
 
