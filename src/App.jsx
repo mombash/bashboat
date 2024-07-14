@@ -3,8 +3,9 @@ import MqttClient from "./MqttClient";
 import MapComponent from "./MapComponent";
 import EmptyMapComponent from "./EmptyMapComponent";
 import Table from "./Table";
-import TemperatureTile from "./TemperatureTile";
+import TileComponent from "./TileComponent";
 import "./App.css";
+import Dashboard from "./Dashboard";
 
 // unique to formatting
 
@@ -387,11 +388,13 @@ const App = () => {
           </div>
         </div>
       ) : (
-        <TemperatureTile
-          temperature={
-            myLatestTemperatures[Object.keys(myLatestTemperatures)[0]]
-          }
-        />
+        <Dashboard vesselMeasurements={myLatestMeasurements}/>
+        // <TileComponent
+        // label="Temperature"  
+        // measruement={
+        //     myLatestTemperatures[Object.keys(myLatestTemperatures)[0]]
+        //   }
+        // />
       )}
     </>
   );

@@ -1,0 +1,19 @@
+.dashboard {
+    height: calc(100vh - 20px);
+    width: calc(100vw - 8px);
+    display: grid;
+    grid-template-columns: 100%;
+    grid-template-rows: 10% auto; /* Change 85% to 1fr and 5% to auto */
+    grid-template-areas:
+        "header"
+        "body";
+}
+
+.dashboard-table {
+    grid-area: body;
+    size: 100%;
+}
+
+.dashboard-table-id {
+    font-size: 36pt;
+}

@@ -1,0 +1,11 @@
+.tile-value {
+  font-size: 4em;
+  font-weight: bold;
+  color: #fff;
+  text-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
+}
+.tile-label {
+  font-size: 2em;
+  color: #fff;
+  text-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
+}
