@@ -12,8 +12,21 @@
 .dashboard-table {
     grid-area: body;
     size: 100%;
+    text-align: center;
 }
 
 .dashboard-table-id {
     font-size: 36pt;
+}
+
+.dashboard-title {
+    grid-area: header;
+    text-align: center;
+    margin: 0 auto;
+    font-size: 36pt;
+}
+
+.dashboard-tile-container {
+    display: flex;
+    justify-content: center;
 }

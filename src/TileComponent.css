@@ -9,3 +9,10 @@
   color: #fff;
   text-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
 }
+.tile {
+    align-self: center;
+    background-color: darkgrey;
+    border-radius: 10px;
+    overflow: hidden;
+    width: 70%;
+}
