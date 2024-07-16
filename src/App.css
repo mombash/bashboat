@@ -57,12 +57,12 @@
 }
 
 .vessel-enabled {
-  background-image: url('./ship.png');
+  background-image: url('./img/ship.png');
   background-color: rgb(235, 235, 235);
 }
 
 .vessel-disabled {
-  background-image: url('./ship-disabled.png');
+  background-image: url('./img/ship-disabled.png');
   background-color: rgb(87, 87, 87);
 }
 
@@ -81,12 +81,12 @@
 }
 
 .path-enabled {
-  background-image: url('./path.png');
+  background-image: url('./img/path.png');
   background-color: rgb(235, 235, 235);
 }
 
 .path-disabled {
-  background-image: url('./path-disabled.png');
+  background-image: url('./img/path-disabled.png');
   background-color: rgb(87, 87, 87);
 }
 

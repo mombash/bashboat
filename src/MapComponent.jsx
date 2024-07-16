@@ -8,8 +8,8 @@ import {
 } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import "./App.css";
-import marker from "./myVessel-map-marker.png";
-import otherMarker from "./otherVessel-map-marker.png";
+import marker from "./img/myVessel-map-marker.png";
+import otherMarker from "./img/otherVessel-map-marker.png";
 
 const MapComponent = ({ vesselData , showOtherVessels , showVesselPath}) => {
   console.log("mapC Vessel data:", vesselData);
