@@ -1,11 +1,10 @@
 import React, { useState } from "react";
-import MqttClient from "./MqttClient";
-import MapComponent from "./MapComponent";
-import EmptyMapComponent from "./EmptyMapComponent";
-import Table from "./Table";
-import TileComponent from "./TileComponent";
+import MqttClient from "./components/MqttClient";
+import MapComponent from "./components/MapComponent";
+import EmptyMapComponent from "./components/EmptyMapComponent";
+import Table from "./components/Table";
 import "./App.css";
-import Dashboard from "./Dashboard";
+import Dashboard from "./components/Dashboard";
 
 // unique to formatting
 

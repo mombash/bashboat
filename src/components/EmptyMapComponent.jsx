@@ -4,7 +4,7 @@ import {
   TileLayer,
 } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
-import "./App.css";
+import "../App.css";
 
 const MapComponent = ({ }) => {
   return (
