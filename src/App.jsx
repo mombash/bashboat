@@ -6,19 +6,15 @@ import Table from "./components/Table";
 import "./App.css";
 import Dashboard from "./components/Dashboard";
 
-// unique to formatting
-
 function getLatestVessels(vesselData) {
   const latestVessels = {};
   vesselData.forEach((vessel) => {
-    // Assuming vessel.id is the unique identifier for each vessel
     latestVessels[vessel.id] = vessel;
   });
   return Object.values(latestVessels);
 }
 
 const App = () => {
-  // const [vesselData, setVesselData] = useState({});
   const [vesselData, setMyVesselData] = useState({});
   const [otherVesselData, setOtherVesselData] = useState({});
   const [isAllDataValid, setIsAllDataValid] = useState(false);
@@ -26,7 +22,8 @@ const App = () => {
   const [showVesselPath, toggleShowVesselPath] = useState(false);
   const [showDashboard, toggleShowDashboard] = useState(false);
 
-  // Utility function to extract vessel data
+  // Utility function to extract relevant vessel data from data recieved.
+  // It also simplifies the format of the data.
   const extractVesselData = (data) => {
     console.log("EXTRACTVESSELDATA: Extracting vessel data:", data);
     return data.updates
@@ -53,9 +50,7 @@ const App = () => {
         const uuid = data.context.split(":").pop();
 
         if (isNavDataValid && !isMeasureDataValid) {
-          console.log(
-            "EXTRACTVESSELDATA: Extracted navigation data only, vessel data:"
-          );
+          console.log("EXTRACTVESSELDATA: Extracted navigation data only");
           return {
             id: uuid,
             lat: position.value.latitude,
@@ -64,9 +59,7 @@ const App = () => {
             owner: isMyVessel ? "myVessel" : "otherVessel",
           };
         } else if (!isNavDataValid && isMeasureDataValid) {
-          console.log(
-            "EXTRACTVESSELDATA: Extracted measurements data only, vessel data:"
-          );
+          console.log("EXTRACTVESSELDATA: Extracted measurements data only");
           return {
             id: uuid,
             temperature: data.temperature,
@@ -76,7 +69,7 @@ const App = () => {
           };
         } else {
           console.log(
-            "EXTRACTVESSELDATA: Extracted both measurement and naviagtion data, vessel data:"
+            "EXTRACTVESSELDATA: Extracted both measurement and naviagtion data"
           );
           return {
             id: uuid,
@@ -95,27 +88,18 @@ const App = () => {
       .filter((item) => item !== null); // Filter out invalid positions
   };
 
+  // Utility function to update the relevant state based on the owner of the data.
   const handleDataReceived = (data) => {
-    // Determine if the data is from 'myVessel' or 'otherVessel' based on the context
-    // const isMyVessel = data.context.startsWith("vessels.urn:mrn:signalk:uuid:");
-    // const owner = isMyVessel ? 'myVessel' : 'otherVessel';
+    console.log("HANDLEDATARECIEVED: Received vessel data:", data);
 
-    // // Log the received data
-    console.log("Received vessel data:", data);
+    const vesselId = data[0].id;
+    console.log("HANDLEDATARECIEVED: Received data for vessel:", vesselId);
 
-    const vesselId = data[0].id; // Extract vessel ID
-    console.log("Received data for vessel:", vesselId);
-
-    console.log("Data owner:", data[0].owner);
-
-    // Use the owner variable to decide how to set the data without extracting it
     if (data[0].owner === "myVessel") {
       setMyVesselData((prevData) => ({
         ...prevData,
         [vesselId]: prevData[vesselId] ? [...prevData[vesselId], data] : [data],
       }));
-      //   [vesselId]: prevData[vesselId] ? [...prevData[vesselId], data] : [data] // Use unextracted data directly
-      // }));
     } else {
       setOtherVesselData((prevData) => ({
         ...prevData,
@@ -123,67 +107,46 @@ const App = () => {
       }));
     }
   };
-  // const latestVesselData = vesselData[vesselData.length - 1];
 
-  console.log("Number of Vessels: ", Object.keys(vesselData).length);
-  console.log("Vessel Data Type: ", typeof vesselData);
-  console.log("Vessel Data: ", vesselData);
-  console.log("Other vessel data: ", otherVesselData);
-  if (Object.keys(vesselData).length) {
-    // console.log("Latest Latitude:", latestVesselData[0].lat);
-  }
-  console.log("Is Vessel an Object: ", vesselData.constructor === Object);
+  // Testing if there is valid data in my vessel data
   const myKeys = Object.keys(vesselData);
-  console.log("My Keys: ", myKeys);
   const mySomeKey = myKeys[0];
-  console.log("Some Key: ", mySomeKey);
-  console.log("Type of mySome Key: ", typeof mySomeKey);
-  console.log("My somekey of the vessel data", vesselData[mySomeKey]);
   if (typeof vesselData[mySomeKey] !== "undefined") {
-    console.log(
-      "Length of vesselData[mySomeKey]:",
-      vesselData[mySomeKey].length
-    );
+    console.log("APP: Your contains a valid entry");
   }
+  // Testing if there's valid data in other vessel data
   const keys = Object.keys(otherVesselData);
-  console.log("Keys: ", keys);
   const someKey = keys[0];
-  console.log("Some Key: ", someKey);
-  console.log("Type of Some Key: ", typeof someKey);
-  console.log("Somekey of the vessel data", otherVesselData[someKey]);
   if (typeof otherVesselData[someKey] !== "undefined") {
-    console.log(
-      "Length of otherVesselData[someKey]:",
-      otherVesselData[someKey].length
-    );
+    console.log("APP: Other vessel contains a valid entry");
   }
 
+  // Testing if all data contains valid entries, this is the criteria for displaying the map
+  if (typeof mySomeKey !== "undefined" && typeof someKey !== "undefined") {
+    if (
+      vesselData[mySomeKey].length >= 1 &&
+      otherVesselData[someKey].length >= 1
+    ) {
+      console.log("APP: All data contains valid entries");
+      if (!isAllDataValid) {
+        setIsAllDataValid(true);
+      }
+    }
+  }
+
+  // Getting the latest versions of all data
   const myFlattenedVesselData = Object.values(vesselData).flat(2);
   const myLatestVesselData = getLatestVessels(myFlattenedVesselData);
 
   const otherFlattenedVesselData = Object.values(otherVesselData).flat(2);
   const otherLatestVesselData = getLatestVessels(otherFlattenedVesselData);
 
-  const myLatestTemperatures = myLatestVesselData.reduce((acc, vessel) => {
-    return {
-      ...acc,
-      [vessel.id]: vessel.temperature,
-    };
-  }, {});
-  const myLatestHumidities = myLatestVesselData.reduce((acc, vessel) => {
-    return {
-      ...acc,
-      [vessel.id]: vessel.humidity,
-    };
-  }, {});
-  const myLatestPressures = myLatestVesselData.reduce((acc, vessel) => {
-    return {
-      ...acc,
-      [vessel.id]: vessel.pressure,
-    };
-  }, {});
   const myLatestMeasurements = myLatestVesselData.reduce((acc, vessel) => {
-    if (vessel.temperature !== undefined && vessel.humidity !== undefined && vessel.pressure !== undefined) {
+    if (
+      vessel.temperature !== undefined &&
+      vessel.humidity !== undefined &&
+      vessel.pressure !== undefined
+    ) {
       return {
         ...acc,
         [vessel.id]: {
@@ -195,21 +158,8 @@ const App = () => {
     }
     return acc;
   }, {});
-  console.log("APP: My latest measurements:", myLatestMeasurements);
 
-  if (typeof mySomeKey !== "undefined" && typeof someKey !== "undefined") {
-    console.log("some data is valid");
-    if (
-      vesselData[mySomeKey].length >= 1 &&
-      otherVesselData[someKey].length >= 1
-    ) {
-      console.log("All data is valid");
-      if (!isAllDataValid) {
-        setIsAllDataValid(true);
-      }
-    }
-  }
-
+  // Function to update the footer.
   function updateFooter() {
     const footer = document.querySelector(".footer");
     const footerContent = footer.innerHTML.trim();
@@ -222,13 +172,7 @@ const App = () => {
     }
   }
 
-  // Call updateFooter when the page loads
   document.addEventListener("DOMContentLoaded", updateFooter);
-
-  // Call updateFooter whenever the footer content changes
-  // You'll need to call this function whenever you add or remove content from the footer
-
-  console.log("Button State: ", showOtherVessels);
 
   return (
     <>
@@ -282,12 +226,10 @@ const App = () => {
                 onClick={() => toggleShowOtherVessels(!showOtherVessels)}
                 title={
                   showOtherVessels
-                    ? "Showing only your vessels.\nClick to show other vessels."
-                    : "Showing other vessels.\nClick to hide."
+                    ? "Showing other vessels.\nClick to hide."
+                    : "Showing only your vessels.\nClick to show other vessels."
                 }
               ></button>
-              {/* <h1>All Vessels</h1> */}
-              {/* <Table extractVesselData={extractVesselData} latestVesselData={Object.values(myLatestVesselData.concat(otherLatestVesselData))} /> */}
               {isAllDataValid ? (
                 <MapComponent
                   showVesselPath={showVesselPath}
@@ -318,56 +260,6 @@ const App = () => {
               />
             )}
           </div>
-          {/* {typeof mySomeKey !== "undefined" ? (
-        <>
-        {vesselData[mySomeKey].length >= 1 ? (
-          <div className="sidebar">
-          <h3>My Vessels</h3>
-          <Table
-          className="table-div"
-          extractVesselData={extractVesselData}
-          latestVesselData={Object.values(myLatestVesselData)}
-          />
-              {!isAllDataValid ? (
-                <div className="map-div">
-                  <MapComponent vesselData={vesselData} />
-                  </div>
-              ) : (
-                <></>
-                )}
-            </div>
-            ) : (
-            <></>
-            )}
-        </>
-        ) : (
-          <></>
-      )} */}
-          {typeof someKey !== "undefined" ? (
-            <>
-              {otherVesselData[someKey].length >= 1 ? (
-                <>
-                  {/* <h3>Other Vessels</h3> */}
-                  {/* <Table
-                className="table-div"
-                extractVesselData={extractVesselData}
-                latestVesselData={Object.values(otherLatestVesselData)}
-                /> */}
-                  {!isAllDataValid ? (
-                    <div>
-                      {/* <MapComponent vesselData={otherVesselData} /> */}
-                    </div>
-                  ) : (
-                    <></>
-                  )}
-                </>
-              ) : (
-                <></>
-              )}
-            </>
-          ) : (
-            <></>
-          )}
           <div className="footer">
             {typeof someKey !== "undefined" ? (
               otherVesselData[someKey].length < 1 ? (
@@ -390,13 +282,7 @@ const App = () => {
           </div>
         </div>
       ) : (
-        <Dashboard vesselMeasurements={myLatestMeasurements}/>
-        // <TileComponent
-        // label="Temperature"  
-        // measruement={
-        //     myLatestTemperatures[Object.keys(myLatestTemperatures)[0]]
-        //   }
-        // />
+        <Dashboard vesselMeasurements={myLatestMeasurements} />
       )}
     </>
   );

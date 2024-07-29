@@ -12,21 +12,18 @@ import marker from "../img/myVessel-map-marker.png";
 import otherMarker from "../img/otherVessel-map-marker.png";
 
 const MapComponent = ({ vesselData , showOtherVessels , showVesselPath}) => {
-  console.log("mapC Vessel data:", vesselData);
   const vesselEntries = Object.entries(vesselData).map(([id, positions]) => ({
     id,
     positions: positions.flat().map(({ lat, lng }) => [lat, lng]),
     owner: positions[0][0].owner,
   }));
 
-  console.log("mapC Vessel entries:", vesselEntries);
   const center =
     vesselEntries.length > 0 && vesselEntries[0].positions.length > 0
       ? vesselEntries[0].positions[0]
       : [0, 0];
-  console.log("mapC Position:", vesselEntries[0].positions);
 
-  const options = { color: "red", smoothFactor: 10 };
+  const options = { smoothFactor: 10 };
 
   return (
     <div className="map-container">
@@ -47,7 +44,6 @@ const MapComponent = ({ vesselData , showOtherVessels , showVesselPath}) => {
             iconAnchor: [12, 41], // Point of the icon which will correspond to marker's location
             popupAnchor: [1, -34], // Point from which the popup should open relative to the iconAnchor
           });
-          console.log("Vessel:", vessel);
           if (showOtherVessels || vessel.owner === "myVessel") {
             return (
               <Marker
