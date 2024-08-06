@@ -17,7 +17,7 @@ function getLatestVessels(vesselData) {
 const App = () => {
   const [vesselData, setMyVesselData] = useState({});
   const [otherVesselData, setOtherVesselData] = useState({});
-  const [isAllDataValid, setIsAllDataValid] = useState(false);
+  const [isSomeDataValid, setIsSomeDataValid] = useState(false);
   const [showOtherVessels, toggleShowOtherVessels] = useState(false);
   const [showVesselPath, toggleShowVesselPath] = useState(false);
   const [showDashboard, toggleShowDashboard] = useState(false);
@@ -121,15 +121,19 @@ const App = () => {
     console.log("APP: Other vessel contains a valid entry");
   }
 
-  // Testing if all data contains valid entries, this is the criteria for displaying the map
-  if (typeof mySomeKey !== "undefined" && typeof someKey !== "undefined") {
+  // Testing if there is valid data in my vessel data and other vessel data
+  const isMyVesselDataValid = typeof mySomeKey !== "undefined" && vesselData[mySomeKey].length >= 1;
+  const isOtherVesselDataValid = typeof someKey !== "undefined" && otherVesselData[someKey].length >= 1;  
+
+  // Testing if some data contains valid entries, this is the criteria for displaying the map
+  if (typeof mySomeKey !== "undefined" || typeof someKey !== "undefined") {
     if (
-      vesselData[mySomeKey].length >= 1 &&
+      vesselData[mySomeKey].length >= 1 ||
       otherVesselData[someKey].length >= 1
     ) {
       console.log("APP: All data contains valid entries");
-      if (!isAllDataValid) {
-        setIsAllDataValid(true);
+      if (!isSomeDataValid) {
+        setIsSomeDataValid(true);
       }
     }
   }
@@ -230,12 +234,18 @@ const App = () => {
                     : "Showing only your vessels.\nClick to show other vessels."
                 }
               ></button>
-              {isAllDataValid ? (
+              {isSomeDataValid ? (
                 <MapComponent
-                  showVesselPath={showVesselPath}
-                  showOtherVessels={showOtherVessels}
-                  vesselData={{ ...vesselData, ...otherVesselData }}
-                />
+                showVesselPath={showVesselPath}
+                showOtherVessels={showOtherVessels}
+                vesselData={
+                  isMyVesselDataValid && isOtherVesselDataValid
+                    ? { ...vesselData, ...otherVesselData }
+                    : isMyVesselDataValid
+                    ? vesselData
+                    : otherVesselData
+                }
+              />
               ) : (
                 <EmptyMapComponent />
               )}
