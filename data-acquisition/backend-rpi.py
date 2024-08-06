@@ -21,16 +21,16 @@ import paho.mqtt.client as mqtt_client
 WEBSOCKET_URL = "ws://localhost:3000/signalk/v1/stream"
 
 # MQTT broker configuration
-broker = 'broker.emqx.io' # Public broker
-# broker = 'bd2eee5e.ala.asia-southeast1.emqxsl.com' # Private broker
-port = 1883 # non-secure port (public broker only supports this)
-# port = 8883 # secure port (requires certificate)
+# broker = 'broker.emqx.io' # Public broker
+broker = 'bd2eee5e.ala.asia-southeast1.emqxsl.com' # Private broker
+# port = 1883 # non-secure port (public broker only supports this)
+port = 8883 # secure port (use only with private broker)
 topic = "test-topic"
 measTopic = "test-topic/measurments"
 client_id = f'publish-123'
-# username = 'bash'  # MQTT broker username (not required by public broker)
-# password = 'root'  # MQTT broker password (not required by public broker)
-# ca_certs_path = "/home/layth/Downloads/emqxsl-ca.crt"  # Path to your CA certificate
+# username = 'bash'  # MQTT broker username (use only with private broker)
+# password = 'root'  # MQTT broker password (use only with private broker)
+# ca_certs_path = "../src/bin/emqxsl-ca.crt"  # Path to your CA certificate (use only with private broker)
 
 # Global variable to keep track of the last sent dummy data type
 last_sent_dummy = "dummy1"
@@ -50,6 +50,7 @@ def connect_mqtt():
 
     client = mqtt_client.Client(mqtt_client.CallbackAPIVersion.VERSION1, client_id)
     client.on_connect = on_connect
+    # For Private broker
     # client.username_pw_set(username, password)  # Set MQTT username and password
     # client.tls_set(ca_certs="/home/basho/TestFolder/emqxsl-ca.crt", tls_version=mqtt_client.ssl.PROTOCOL_TLS) # Set MQTT TLS certificate
 

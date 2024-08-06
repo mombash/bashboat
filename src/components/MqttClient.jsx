@@ -7,10 +7,26 @@ const MqttClient = ({ onDataReceived, extractVesselData }) => {
   const [lastMessageTime, setLastMessageTime] = useState(Date.now());
   const [hasReceivedValidData, setHasReceivedValidData] = useState(false);
 
+  // Secure broker configs, unused if using the public broker
+  const brokerUrl = "wss://bd2eee5e.ala.asia-southeast1.emqxsl.com:8084/mqtt";
+  const username = "bash";
+  const password = "root";
+  const certPath = "../bin/emqxsl-ca.crt"; // path to certificate
+
   useEffect(() => {
+    // Public broker config and connect
     const mqttClient = mqtt.connect("ws://broker.emqx.io:8083/mqtt", {
       clientId: "mqttjs_" + Math.random().toString(16).substr(2, 8),
     });
+
+    // Secure broker connect
+/*     const mqttClient = mqtt.connect(brokerUrl, {
+      clientId: "mqttjs_" + Math.random().toString(16).substr(2, 8),
+      username: username,
+      password: password,
+      ca: [certPath],
+      protocol: "wss",
+    }); */
 
     mqttClient.on("connect", () => {
       console.log("MQTTCLIENT: Connected to MQTT Broker");
