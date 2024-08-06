@@ -221,6 +221,15 @@ def get_dummy_ais():
         ]
     }
 
+def get_dummy_measurements():
+    return {
+        "vessel_uuid": "live_dummy_0",
+        "temperature": round(random.uniform(20, 30), 2),
+        "humidity": round(random.uniform(40, 60), 2),
+        "pressure": round(random.uniform(1000, 1020), 2),
+        "timestamp": datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+    }
+
 async def publishNavMessage(client, message):
     data = json.loads(message)
     payload = json.dumps(data)
@@ -319,16 +328,20 @@ async def send_dummy_data(client):
             elif last_sent_dummy == "dummy1":
                 data = get_dummy_ais()
                 last_sent_dummy = "dummy_ais"
-                print(f'last_sent_dummy: {last_sent_dummy}')    
             elif last_sent_dummy == "dummy_ais":
                 data = get_dummy2()
                 last_sent_dummy = "dummy2"
-                print(f'last_sent_dummy: {last_sent_dummy}')
+            elif last_sent_dummy == "dummy2":
+                data = get_dummy_measurements()
+                last_sent_dummy = "dummy_measurements"
             else:
                 data = get_dummy0()
                 last_sent_dummy = "dummy0"
         payload = json.dumps(data)
-        result = client.publish(topic, payload)
+        if last_sent_dummy == "dummy_measurements":
+            result = client.publish(topic + "/measurments", payload)
+        else:
+            result = client.publish(topic, payload)
         status = result[0]
         if status == mqtt_client.MQTT_ERR_SUCCESS:
             print(f"Sent `{payload}` to topic `{topic}`")
