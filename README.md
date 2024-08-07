@@ -10,7 +10,7 @@ From a high-level, the backend that runs on a Raspberry PI (RPI) collects the na
 
 The frontend receives this data from the the MQTT broker itself by subscribing to the topic. The frontend displays the vessels and their navigation data in a sidebar using the Table component and displays the location of the vessels using markers on a map using the MapComponent. The site also contains a dashboard that displays the measurements data from each vessel using the Dashboard component.
 
-![bashcam 1 of 2.png](https://prod-files-secure.s3.us-west-2.amazonaws.com/5850a12c-734b-4d24-a8f5-70c765851d57/baa819a3-4e23-4dff-b6f4-9499c2ba343a/bashcam_1_of_2.png)
+![bashboat flowchart](bashboat-flowchart.png)
 
 # Setup
 
