@@ -57,7 +57,7 @@ python3 fileName.py
 You send dummy data or live data from the PC. The live data won’t contain any measurements data since the Sense HAT cannot be connected to a PC
 
 1. **Live data**: To send live data, run `backend-pc.py` and enter `live` .
-2. **Dummy data**: \*\*\*\*To send dummy data, run `backend-pc.py` and enter `mixed` .
+2. **Dummy data**: To send dummy data, run `backend-pc.py` and enter `mixed` .
 
 ### From a Raspberry PI
 
