@@ -9,17 +9,17 @@ import paho.mqtt.client as mqtt_client
 # WEBSOCKET_URL = "ws://192.168.179.34:3000/signalk/v1/stream"
 
 # Signal K local WebSocket URL
-# WEBSOCKET_URL = "ws://localhost:3000/signalk/v1/stream"
+WEBSOCKET_URL = "ws://localhost:3000/signalk/v1/stream"
 
 # Signal K Home WIFI WebSocket URL
-WEBSOCKET_URL = "ws://192.168.1.16:3000/signalk/v1/stream"
+# WEBSOCKET_URL = "ws://192.168.1.16:3000/signalk/v1/stream"
 
 # MQTT broker configuration
-# broker = 'broker.emqx.io' # Public broker
-broker = 'bd2eee5e.ala.asia-southeast1.emqxsl.com' # Private broker
-# port = 1883 # non-secure port (public broker only supports this)
-port = 8883 # secure port (use only with private broker)
-topic = "test-topic"
+broker = 'broker.emqx.io' # Public broker
+# broker = 'bd2eee5e.ala.asia-southeast1.emqxsl.com' # Private broker
+port = 1883 # non-secure port (public broker only supports this)
+# port = 8883 # secure port (use only with private broker)
+topic = "test-topic-a"
 client_id = f'publish-123'
 # username = 'bash'  # MQTT broker username (use only with private broker)
 # password = 'root'  # MQTT broker password (use only with private broker)

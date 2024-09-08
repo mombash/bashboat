@@ -12,6 +12,7 @@ const MqttClient = ({ onDataReceived, extractVesselData }) => {
   const username = "bash";
   const password = "root";
   const certPath = "../bin/emqxsl-ca.crt"; // path to certificate
+  const brokerTopic = "test-topic-a";
 
   useEffect(() => {
     // Public broker config and connect
@@ -31,7 +32,7 @@ const MqttClient = ({ onDataReceived, extractVesselData }) => {
     mqttClient.on("connect", () => {
       console.log("MQTTCLIENT: Connected to MQTT Broker");
       // Subscribe to the original topic
-      mqttClient.subscribe("test-topic", (err) => {
+      mqttClient.subscribe(brokerTopic, (err) => {
         if (err) {
           console.error(
             "MQTTCLIENT: Failed to subscribe to navigation topic",
@@ -40,7 +41,7 @@ const MqttClient = ({ onDataReceived, extractVesselData }) => {
         }
       });
       // Subscribe to the new topic
-      mqttClient.subscribe("test-topic/measurments/#", (err) => {
+      mqttClient.subscribe(brokerTopic + "/measurments/#", (err) => {
         if (err) {
           console.error(
             "MQTTCLIENT: Failed to subscribe to measurements topic",
@@ -57,13 +58,13 @@ const MqttClient = ({ onDataReceived, extractVesselData }) => {
       try {
         const data = JSON.parse(message.toString());
         console.log(`MQTTCLIENT: Received below message on ${topic}:`, data);
-        if (topic === "test-topic") {
+        if (topic === topic) {
           setLastMessageTime(Date.now());
           setHasReceivedValidData(true); // Set to true when valid data is received
           navigation = data;
           console.log("MQTTCLIENT: Received new navigation data:", navigation);
         }
-        if (topic === "test-topic/measurments") {
+        if (topic === brokerTopic + "/measurments") {
           setLastMessageTime(Date.now());
           setHasReceivedValidData(true); // Set to true when valid data is received
           measurements = data;

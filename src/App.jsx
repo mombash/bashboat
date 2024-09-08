@@ -122,8 +122,10 @@ const App = () => {
   }
 
   // Testing if there is valid data in my vessel data and other vessel data
-  const isMyVesselDataValid = typeof mySomeKey !== "undefined" && vesselData[mySomeKey].length >= 1;
-  const isOtherVesselDataValid = typeof someKey !== "undefined" && otherVesselData[someKey].length >= 1;  
+  const isMyVesselDataValid =
+    typeof mySomeKey !== "undefined" && vesselData[mySomeKey].length >= 1;
+  const isOtherVesselDataValid =
+    typeof someKey !== "undefined" && otherVesselData[someKey].length >= 1;
 
   // Testing if some data contains valid entries, this is the criteria for displaying the map
   if (typeof mySomeKey !== "undefined" || typeof someKey !== "undefined") {
@@ -236,16 +238,16 @@ const App = () => {
               ></button>
               {isSomeDataValid ? (
                 <MapComponent
-                showVesselPath={showVesselPath}
-                showOtherVessels={showOtherVessels}
-                vesselData={
-                  isMyVesselDataValid && isOtherVesselDataValid
-                    ? { ...vesselData, ...otherVesselData }
-                    : isMyVesselDataValid
-                    ? vesselData
-                    : otherVesselData
-                }
-              />
+                  showVesselPath={showVesselPath}
+                  showOtherVessels={showOtherVessels}
+                  vesselData={
+                    isMyVesselDataValid && isOtherVesselDataValid
+                      ? { ...vesselData, ...otherVesselData }
+                      : isMyVesselDataValid
+                      ? vesselData
+                      : otherVesselData
+                  }
+                />
               ) : (
                 <EmptyMapComponent />
               )}
