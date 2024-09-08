@@ -28,8 +28,7 @@ npm install
 npm run dev
 ```
 
-1. `CTRL + CLICK` the link
-2. that appears in the terminal.
+1. `CTRL + CLICK` the link that appears in the terminal.
 
 ```cpp
 > bashboat-app@0.0.0 dev
