@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import MqttClient from "./components/MqttClient";
+import MqttClient from "./components/MqttClient-issues";
 import MapComponent from "./components/MapComponent";
 import EmptyMapComponent from "./components/EmptyMapComponent";
 import Table from "./components/Table";
@@ -40,12 +40,12 @@ const App = () => {
 
         const isNavDataValid =
           position &&
-          position.value.latitude !== null &&
-          position.value.longitude !== null;
+          position.value.latitude !== (null || undefined) &&
+          position.value.longitude !== (null || undefined);
         const isMeasureDataValid =
-          data.temperature !== null &&
-          data.humidity !== null &&
-          data.pressure !== null;
+          data.temperature !== (null || undefined)  &&
+          data.humidity !== (null || undefined) &&
+          data.pressure !== (null || undefined);
 
         const uuid = data.context.split(":").pop();
 
@@ -67,6 +67,12 @@ const App = () => {
             pressure: data.pressure,
             owner: isMyVessel ? "myVessel" : "otherVessel",
           };
+        } else if (!isNavDataValid && !isMeasureDataValid) {
+          console.log(
+            "EXTRACTVESSELDATA: Extracted neither navigation nor measurement data"
+          );
+          return null;
+
         } else {
           console.log(
             "EXTRACTVESSELDATA: Extracted both measurement and naviagtion data"
