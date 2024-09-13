@@ -39,7 +39,6 @@ const MapComponent = ({ vesselData , showOtherVessels , showVesselPath}) => {
         {vesselEntries.map((vessel) => {
           const latestPosition = vessel.positions[vessel.positions.length - 1]; // Get the latest position
           console.log("MAPCOMPONENT: Latest Position:", latestPosition);
-          console.log("MAPCOMPONENT: Vessel Positions:", vessel.positions);
           const customIcon = new L.Icon({
             iconUrl: vessel.owner === "myVessel" ? marker : otherMarker,
             iconSize: [25, 41], // Size of the icon
