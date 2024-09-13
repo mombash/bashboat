@@ -1,5 +1,5 @@
 import React, { useState, useEffect} from "react";
-import MqttClient from "./components/MqttClient-issues";
+import MqttClient from "./components/MqttClient";
 import MapComponent from "./components/MapComponent";
 import EmptyMapComponent from "./components/EmptyMapComponent";
 import Table from "./components/Table";

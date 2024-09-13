@@ -12,7 +12,8 @@ const MqttClient = ({ onDataReceived, extractVesselData }) => {
   const username = "bash";
   const password = "root";
   const certPath = "../bin/emqxsl-ca.crt"; // path to certificate
-  const brokerTopic = "test-topic-a";
+  const received_topic = "eboat-topic"
+  const measurements_topic = "eboat-topic/measurments"
 
   useEffect(() => {
     // Public broker config and connect
@@ -32,7 +33,7 @@ const MqttClient = ({ onDataReceived, extractVesselData }) => {
     mqttClient.on("connect", () => {
       console.log("MQTTCLIENT: Connected to MQTT Broker");
       // Subscribe to the original topic
-      mqttClient.subscribe(brokerTopic, (err) => {
+      mqttClient.subscribe(received_topic, (err) => {
         if (err) {
           console.error(
             "MQTTCLIENT: Failed to subscribe to navigation topic",
@@ -41,7 +42,8 @@ const MqttClient = ({ onDataReceived, extractVesselData }) => {
         }
       });
       // Subscribe to the new topic
-      mqttClient.subscribe(brokerTopic + "/measurments/#", (err) => {
+      
+      mqttClient.subscribe(measurements_topic, (err) => {
         if (err) {
           console.error(
             "MQTTCLIENT: Failed to subscribe to measurements topic",
@@ -58,13 +60,14 @@ const MqttClient = ({ onDataReceived, extractVesselData }) => {
       try {
         const data = JSON.parse(message.toString());
         console.log(`MQTTCLIENT: Received below message on ${topic}:`, data);
-        if (topic === brokerTopic) {
+        if (topic === received_topic) {
           setLastMessageTime(Date.now());
           setHasReceivedValidData(true); // Set to true when valid data is received
           navigation = data;
           console.log("MQTTCLIENT: Received new navigation data:", navigation);
         }
-        if (topic === brokerTopic + "/measurments") {
+        
+        if (topic === measurements_topic) {
           setLastMessageTime(Date.now());
           setHasReceivedValidData(true); // Set to true when valid data is received
           measurements = data;
@@ -83,7 +86,7 @@ const MqttClient = ({ onDataReceived, extractVesselData }) => {
         ) {
           console.log("MQTTCLIENT: Current data contains only navigation data");
           const vesselData = extractVesselData({ ...navigation });
-          onDataReceived(vesselData);
+          if (vesselData) {onDataReceived(vesselData);}
         } else if (
           Object.keys(navigation).length === 0 &&
           Object.keys(measurements).length !== 0
@@ -92,7 +95,7 @@ const MqttClient = ({ onDataReceived, extractVesselData }) => {
             "MQTTCLIENT: Current data contains only measurements data"
           );
           const vesselData = extractVesselData({ ...measurements });
-          onDataReceived(vesselData);
+          if (vesselData) {onDataReceived(vesselData);}
         } else {
           console.log(
             "MQTTCLIENT: Current data contains both navigation and measurements data"
@@ -121,7 +124,7 @@ const MqttClient = ({ onDataReceived, extractVesselData }) => {
             },
             []
           );
-          onDataReceived(vesselData[0]);
+          if (vesselData) {onDataReceived(vesselData[0]);}
         }
       } catch (error) {
         console.error("MQTTCLIENT: Error parsing message:", error);
