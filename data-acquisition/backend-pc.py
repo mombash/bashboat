@@ -16,11 +16,19 @@ WEBSOCKET_URL = "ws://localhost:3000/signalk/v1/stream"
 
 # MQTT broker configuration
 broker = 'broker.emqx.io' # Public broker
-# broker = 'bd2eee5e.ala.asia-southeast1.emqxsl.com' # Private broker
+
+# Use local MQTT broker 
+#broker = "localhost"
+
+#broker = 'bd2eee5e.ala.asia-southeast1.emqxsl.com' # Private broker
 port = 1883 # non-secure port (public broker only supports this)
-# port = 8883 # secure port (use only with private broker)
-topic = "test-topic-a"
+#port = 8883 # secure port (use only with private broker)
+topic = "eboat-topic"
 client_id = f'publish-123'
+
+# sleeping time after publishing a message
+sleeping_time = 3
+
 # username = 'bash'  # MQTT broker username (use only with private broker)
 # password = 'root'  # MQTT broker password (use only with private broker)
 # ca_certs_path = "../src/bin/emqxsl-ca.crt"  # Path to your CA certificate (use only with private broker)
@@ -222,6 +230,19 @@ async def handle_message(client, message):
     data = json.loads(message)
     payload = json.dumps(data)
     await asyncio.sleep(1)  # Add a delay of 1 second
+    # Check if latitude or longitude are null
+    for update in data.get("updates", []):
+        for value in update.get("values", []):
+            if value.get("path") == "navigation.position":
+                position = value.get("value", {})
+                try:
+                    lat = position.get("latitude")
+                    lon = position.get("longitude")
+                    if not (isinstance(lat, (int, float)) and isinstance(lon, (int, float))):
+                        raise ValueError("Latitude or Longitude is not a number.")
+                except (TypeError, ValueError) as e:
+                    print(f"Error in position data: {e}. Skipping message.")
+                    return
     result = client.publish(topic, payload)
     status = result[0]
     if status == mqtt_client.MQTT_ERR_SUCCESS:
@@ -290,7 +311,7 @@ async def send_dummy_data(client):
             print(f"Sent `{payload}` to topic `{topic}`")
         else:
             print(f"Failed to send message to topic {topic}")
-        await asyncio.sleep(3)  # Adjust the sleep time as needed
+        await asyncio.sleep(sleeping_time)  # Adjust the sleep time as needed
 
 async def main():
     while True:

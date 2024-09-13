@@ -58,7 +58,7 @@ const MqttClient = ({ onDataReceived, extractVesselData }) => {
       try {
         const data = JSON.parse(message.toString());
         console.log(`MQTTCLIENT: Received below message on ${topic}:`, data);
-        if (topic === topic) {
+        if (topic === brokerTopic) {
           setLastMessageTime(Date.now());
           setHasReceivedValidData(true); // Set to true when valid data is received
           navigation = data;

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect} from "react";
 import MqttClient from "./components/MqttClient-issues";
 import MapComponent from "./components/MapComponent";
 import EmptyMapComponent from "./components/EmptyMapComponent";
@@ -26,6 +26,11 @@ const App = () => {
   // It also simplifies the format of the data.
   const extractVesselData = (data) => {
     console.log("EXTRACTVESSELDATA: Extracting vessel data:", data);
+    if (!data || !data.updates || !Array.isArray(data.updates)) {
+      console.error("EXTRACTVESSELDATA: Invalid data structure:", data);
+      console.log("EXTRACTVESSELDATA: Received measurement data for vessel without navigation data.");
+      return [];
+    }
     return data.updates
       .map((update) => {
         const position = update.values.find(
@@ -40,13 +45,13 @@ const App = () => {
 
         const isNavDataValid =
           position &&
-          position.value.latitude !== (null || undefined) &&
-          position.value.longitude !== (null || undefined);
+          Number.isFinite(position.value.latitude) &&
+          Number.isFinite(position.value.longitude);
         const isMeasureDataValid =
-          data.temperature !== (null || undefined)  &&
-          data.humidity !== (null || undefined) &&
-          data.pressure !== (null || undefined);
-
+          data.temperature &&
+          Number.isFinite(data.temperature.value) &&
+          Number.isFinite(data.humidity.value) &&
+          Number.isFinite(data.pressure.value);
         const uuid = data.context.split(":").pop();
 
         if (isNavDataValid && !isMeasureDataValid) {
@@ -72,7 +77,6 @@ const App = () => {
             "EXTRACTVESSELDATA: Extracted neither navigation nor measurement data"
           );
           return null;
-
         } else {
           console.log(
             "EXTRACTVESSELDATA: Extracted both measurement and naviagtion data"
@@ -97,6 +101,11 @@ const App = () => {
   // Utility function to update the relevant state based on the owner of the data.
   const handleDataReceived = (data) => {
     console.log("HANDLEDATARECIEVED: Received vessel data:", data);
+
+    if (!Array.isArray(data) || data.length === 0 || !data[0] || !data[0].id) {
+      console.error("HANDLEDATARECIEVED: Invalid data received:", data);
+      return;
+    }
 
     const vesselId = data[0].id;
     console.log("HANDLEDATARECIEVED: Received data for vessel:", vesselId);
@@ -134,17 +143,34 @@ const App = () => {
     typeof someKey !== "undefined" && otherVesselData[someKey].length >= 1;
 
   // Testing if some data contains valid entries, this is the criteria for displaying the map
-  if (typeof mySomeKey !== "undefined" || typeof someKey !== "undefined") {
-    if (
-      vesselData[mySomeKey].length >= 1 ||
-      otherVesselData[someKey].length >= 1
-    ) {
-      console.log("APP: All data contains valid entries");
-      if (!isSomeDataValid) {
-        setIsSomeDataValid(true);
+/*   try {
+    if (typeof mySomeKey !== "undefined" || typeof someKey !== "undefined") {
+      if (
+        vesselData[mySomeKey].length >= 1 ||
+        otherVesselData[someKey].length >= 1
+      ) {
+        console.log("APP: All data contains valid entries");
+        if (!isSomeDataValid) {
+          setIsSomeDataValid(true);
+        }
       }
     }
-  }
+  } catch (error) {
+    console.error("Error while checking data validity:", error);
+    setIsSomeDataValid(false);
+  } */
+
+  useEffect(() => {
+    const hasValidMyVesselData = mySomeKey && vesselData[mySomeKey] && vesselData[mySomeKey].length >= 1;
+    const hasValidOtherVesselData = someKey && otherVesselData[someKey] && otherVesselData[someKey].length >= 1;
+  
+    if (hasValidMyVesselData || hasValidOtherVesselData) {
+      console.log("APP: All data contains valid entries");
+      setIsSomeDataValid(true);
+    } else {
+      setIsSomeDataValid(false);
+    }
+  }, [vesselData, otherVesselData, mySomeKey, someKey]);
 
   // Getting the latest versions of all data
   const myFlattenedVesselData = Object.values(vesselData).flat(2);
